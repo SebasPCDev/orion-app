@@ -12,7 +12,7 @@ Route::view('/', 'welcome')->name('home');
 Route::middleware('auth')->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::get('apartments', ApartmentsComponent::class)->name('apartments.index');
-    Route::get('apartments/{apartment}/edit', EditApartmentComponent::class)->name('apartments.edit');
+    Route::get('apartments/{id}/edit', EditApartmentComponent::class)->name('apartments.edit');
     Route::get('pagos', function () {
         return view('livewire.payments-page');
     })->name('payments.index');

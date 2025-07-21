@@ -158,7 +158,7 @@
                                         <div class="flex space-x-2">
                                             <flux:button 
                                                 wire:navigate
-                                                onclick="window.location='{{ route('apartments.edit', $apartment->id) }}'"
+                                                href="{{ route('apartments.edit', $apartment->id) }}"
                                                 variant="primary"
                                                 class="flex-1">
                                                 Editar
