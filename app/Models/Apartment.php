@@ -106,6 +106,9 @@ class Apartment extends Model
         return $this->is_rented ? 'Arrendado' : 'Disponible';
     }
 
+    /**
+     * Get the payments for the apartment.
+     */
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);

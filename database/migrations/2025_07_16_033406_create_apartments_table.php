@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('apartments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('user_id')->nullable()->unique()->constrained()->onDelete('set null');
             $table->string('name');
             $table->string('address');
             $table->decimal('price', 10, 2);

@@ -43,6 +43,7 @@ class EditApartmentComponent extends Component
 
     public function mount($id): void
     {
+
         $this->apartment = Apartment::findOrFail($id);
         $this->fill($this->apartment->toArray());
         $this->amenities = is_array($this->apartment->amenities) ? $this->apartment->amenities : [];

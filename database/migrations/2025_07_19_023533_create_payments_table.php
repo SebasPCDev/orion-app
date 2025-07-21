@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('apartment_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-            $table->decimal('amount', 8, 2);
+            $table->decimal('amount', 10, 2);
             $table->date('payment_date');
+            $table->enum('month', ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']);
             $table->string('status')->default('pending');
             $table->text('description')->nullable();
             $table->timestamps();

@@ -15,15 +15,22 @@ class Payment extends Model
         'user_id',
         'amount',
         'payment_date',
+        'month',
         'status',
         'description',
     ];
 
+    /**
+     * Get the apartment that owns the payment.
+     */
     public function apartment(): BelongsTo
     {
         return $this->belongsTo(Apartment::class);
     }
 
+    /**
+     * Get the user that owns the payment.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
