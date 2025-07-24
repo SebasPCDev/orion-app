@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Apartment;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -35,8 +36,9 @@ class UserSeeder extends Seeder
             ['name' => 'Valentina Torres'],
         ];
 
-        foreach ($tenants as $tenant) {
-            User::create([
+        foreach ($tenants as $index => $tenant) {
+
+            User::factory()->create([
                 'name' => $tenant['name'],
                 'email' => strtolower(str_replace(' ', '.', $tenant['name'])) . '@orion.com',
                 'password' => Hash::make('password'),

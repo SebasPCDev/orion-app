@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('apartments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->unique()->constrained()->onDelete('set null');
             $table->string('name');
             $table->string('address');
             $table->decimal('price', 10, 2);
@@ -22,6 +21,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->integer('bedrooms')->nullable();
             $table->integer('bathrooms')->nullable();
+            $table->foreignId('user_id')->nullable()->unique()->constrained()->onDelete('set null');
             $table->decimal('area', 8, 2)->nullable(); // Área en metros cuadrados
             $table->string('floor')->nullable();
             $table->string('unit_number')->nullable();

@@ -15,8 +15,8 @@
                 <flux:navlist.group :heading="__('Arcelia Cabrera Silva')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="home" :href="route('apartments.index')" :current="request()->routeIs('apartments.index')" wire:navigate>{{ __('Listado de Apartamentos') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('dashboard')"  wire:navigate>{{ __('Contratos') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('dashboard')"  wire:navigate>{{ __('Pagos') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('tenants')" :current="request()->routeIs('tenants')" wire:navigate>{{ __('Listado de Inquilinos') }}</flux:navlist.item>
+                    <!-- <flux:navlist.item icon="home" :href="route('payments.index')" :current="request()->routeIs('payments.index')" wire:navigate>{{ __('Pagos') }}</flux:navlist.item> -->
                 </flux:navlist.group>
             </flux:navlist>
 

@@ -16,6 +16,7 @@ Route::middleware('auth')->group(function () {
     Route::get('pagos', function () {
         return view('livewire.payments-page');
     })->name('payments.index');
+    Route::view('tenants', 'livewire.tenants-page')->name('tenants');
 
     Route::redirect('settings', 'settings/profile');
 

@@ -5,9 +5,7 @@ namespace App\Livewire;
 use App\Models\Payment;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
@@ -20,9 +18,7 @@ final class PaymentsTable extends PowerGridComponent
     public function setUp(): array
     {
 
-        return [
-        
-        ];
+        return [];
     }
 
     public function datasource(): Builder

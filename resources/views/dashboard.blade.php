@@ -3,7 +3,7 @@
         <div class="flex justify-between items-center">
             <h1 class="text-2xl font-bold">Dashboard</h1>
             <flux:modal.trigger name="create-payment-modal">
-                <flux:button variant="primary">Nuevo Pago</flux:button>
+                <flux:button variant="primary" class="cursor-pointer">Nuevo Pago</flux:button>
             </flux:modal.trigger>
         </div>
         

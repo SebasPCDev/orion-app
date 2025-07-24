@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
+            $table->string('identification_number')->nullable();
+            $table->string('status')->nullable();
+            $table->enum('payment_status', ['Al día', 'Retraso', 'Moroso'])->default('Al día');
+            $table->string('backup_phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role')->default('tenant'); // Añadimos el rol

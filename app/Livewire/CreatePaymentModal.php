@@ -75,6 +75,7 @@ class CreatePaymentModal extends Component
         Flux::modals()->close('create-payment-modal');
 
         $this->dispatch('pg:eventRefresh-payments-table-223sc3-table');
+        $this->dispatch('$refresh');
     }
 
     public function render()
