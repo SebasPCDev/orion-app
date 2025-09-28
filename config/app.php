@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Currency Configuration
+    |--------------------------------------------------------------------------
+    |
+    | This configuration is used to set the currency and locale for the application.
+    |
+    */
+
+    "curreny_locale" => "es_CO",
+    'currency' => "COP",
+
 ];

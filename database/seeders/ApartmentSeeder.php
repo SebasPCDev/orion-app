@@ -81,7 +81,7 @@ class ApartmentSeeder extends Seeder
         $apartments = [
             ['name' => 'Apto Termitas 201', 'price' => 370000, 'is_rented' => true],
             ['name' => 'Apto Termitas 202', 'price' => 400000, 'is_rented' => true],
-            ['name' => 'Apto Termitas 203', 'price' => 400000, 'is_rented' => true],
+            ['name' => 'Apto Termitas 203', 'price' => 420000, 'is_rented' => true],
         ];
 
         $data = [];
@@ -109,8 +109,8 @@ class ApartmentSeeder extends Seeder
     {
         $apartments = [
             ['name' => 'Apto Zacarias 101', 'price' => 350000, 'is_rented' => true],
-            ['name' => 'Apto Castillo 101', 'price' => 440000, 'is_rented' => true],
-            ['name' => 'Apto Castillo 102', 'price' => 400000, 'is_rented' => true],
+            ['name' => 'Apto Castillo 101', 'price' => 420000, 'is_rented' => true],
+            ['name' => 'Apto Castillo 102', 'price' => 440000, 'is_rented' => true],
             ['name' => 'Apto Castillo 201', 'price' => 400000, 'is_rented' => true],
         ];
 
@@ -138,8 +138,8 @@ class ApartmentSeeder extends Seeder
     private function getIndependientesData(): array
     {
         $apartments = [
-            ['name' => 'Casa Tania', 'price' => 1200000, 'is_rented' => true],
-            ['name' => 'Casa Juan XXIII', 'price' => 650000, 'is_rented' => true],
+            ['name' => 'Casa Tania', 'price' => 560000, 'is_rented' => true],
+            ['name' => 'Casa Juan XXIII', 'price' => 1050000, 'is_rented' => true],
         ];
 
         $data = [];

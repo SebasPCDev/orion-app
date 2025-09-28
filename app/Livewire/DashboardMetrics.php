@@ -18,7 +18,9 @@ class DashboardMetrics extends Component
 
     public function mount()
     {
-        $this->currentMonth = 'Julio';
+        // Establecer el locale a español para Carbon y obtener el mes en español
+        Carbon::setLocale('es');
+        $this->currentMonth = ucfirst(Carbon::now()->translatedFormat('F'));
         $this->loadMetrics();
     }
 

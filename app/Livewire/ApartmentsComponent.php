@@ -4,12 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Apartment;
 use Illuminate\Contracts\View\View;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('components.layouts.app')]
-#[Title('Mis Apartamentos')]
 class ApartmentsComponent extends Component
 {
     public string $search = '';

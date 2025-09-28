@@ -5,7 +5,5 @@
         </div>
         
         <livewire:tenants-table />
-
-
     </div>
 </x-layouts.app> 

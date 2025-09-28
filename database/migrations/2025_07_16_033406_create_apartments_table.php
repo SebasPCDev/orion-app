@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address');
-            $table->decimal('price', 10, 2);
+            $table->integer('price');
             $table->boolean('is_rented')->default(false);
             $table->string('block')->nullable(); // Para agrupar apartamentos por bloque
             $table->text('description')->nullable();

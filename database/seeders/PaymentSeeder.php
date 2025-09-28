@@ -21,7 +21,7 @@ class PaymentSeeder extends Seeder
         foreach ($usersWithApartments as $user) {
             $apartment = $user->apartment;
             if ($apartment) {
-                for ($month = 1; $month <= 6; $month++) {
+                for ($month = 1; $month <= 8; $month++) {
                     $paymentDate = Carbon::create(2025, $month, 5);
                     $monthName = ucfirst($paymentDate->monthName);
 
