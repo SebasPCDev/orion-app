@@ -11,6 +11,36 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class ApartmentFactory extends Factory
 {
     /**
+     * Generate mock images for apartments.
+     */
+    private function generateMockImages(): array
+    {
+        $apartmentImages = [
+            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1505873242700-f289a29e1e0f?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1571624436279-b272aff752b5?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1615529328331-f8917597711f?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=400&h=300&fit=crop',
+        ];
+
+        // Seleccionar entre 4-8 imágenes aleatorias
+        $imageCount = $this->faker->numberBetween(4, 8);
+        $shuffledImages = collect($apartmentImages)->shuffle();
+        
+        return $shuffledImages->take($imageCount)->values()->toArray();
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -36,6 +66,7 @@ class ApartmentFactory extends Factory
                 'WiFi', 'Estacionamiento', 'Ascensor', 'Seguridad 24/7', 
                 'Área de lavandería', 'Balcón', 'Closet', 'Cocina equipada'
             ], $this->faker->numberBetween(2, 5)),
+            'images' => $this->generateMockImages(),
             'status' => $this->faker->randomElement(['available', 'rented', 'maintenance']),
             'user_id' => User::factory(),
         ];

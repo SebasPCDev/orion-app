@@ -15,6 +15,7 @@ class DashboardMetrics extends Component
     public $totalPayments;
     public $currentMonthPayments;
     public $currentMonth;
+    public $rentedApartments;
 
     public function mount()
     {
@@ -29,8 +30,8 @@ class DashboardMetrics extends Component
     {
         $this->totalRevenue = Payment::whereYear('payment_date', 2025)->sum('amount');
         
-        $rentedApartments = Apartment::where('is_rented', true)->get();
-        $this->annualGoal = $rentedApartments->sum('price') * 12;
+        $this->rentedApartments = Apartment::where('is_rented', true)->get();
+        $this->annualGoal = $this->rentedApartments->sum('price') * 12;
 
         $this->totalPayments = Payment::whereYear('payment_date', 2025)->count();
         

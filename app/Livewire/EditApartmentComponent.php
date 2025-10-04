@@ -31,6 +31,7 @@ class EditApartmentComponent extends Component
     public ?string $floor = '';
     public ?string $unit_number = '';
     public array $amenities = [];
+    public array $images = []; // Agregar esta propiedad
     public string $status = 'available';
 
     // Payment properties
@@ -46,9 +47,11 @@ class EditApartmentComponent extends Component
 
         $this->apartment = Apartment::findOrFail($id);
         $this->fill($this->apartment->toArray());
-        $this->amenities = is_array($this->apartment->amenities) ? $this->apartment->amenities : [];
+        $this->amenities = is_array($this->apartment->amenities) ? $this->apartment->amenities : [];        
         $this->tenant_id = $this->apartment->user_id;
+        $this->images = is_array($this->apartment->images) ? $this->apartment->images : [];
     }
+
 
     protected function rules(): array
     {
@@ -65,6 +68,7 @@ class EditApartmentComponent extends Component
             'floor' => ['nullable', 'string', 'max:50'],
             'unit_number' => ['nullable', 'string', 'max:50'],
             'amenities' => ['nullable', 'array'],
+            'images' => ['nullable', 'array'],
             'status' => ['required', Rule::in(['available', 'rented', 'maintenance'])],
             'amount' => ['nullable', 'numeric', 'min:0'],
             'payment_date' => ['nullable', 'date'],
@@ -74,15 +78,19 @@ class EditApartmentComponent extends Component
 
     public function save(): void
     {
+        //Procesar precio
+        $this->price = str_replace('.', '', $this->price);
+        $this->price = str_replace(',', '', $this->price);
+        $this->price = intval($this->price);
+
         $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:0'],
-            // ... add other apartment rules here if needed for specific validation
         ]);
         $this->apartment->update($this->only([
             'name', 'address', 'price', 'is_rented', 'block', 'description', 
-            'bedrooms', 'bathrooms', 'area', 'floor', 'unit_number', 'amenities', 'status'
+            'bedrooms', 'bathrooms', 'area', 'floor', 'unit_number', 'amenities', 'images', 'status'
         ]));
         session()->flash('message', 'Apartamento actualizado exitosamente.');
         $this->redirectRoute('apartments.index', navigate: true);
@@ -127,7 +135,7 @@ class EditApartmentComponent extends Component
             'rented' => 'Arrendado',
             'maintenance' => 'Mantenimiento',
         ];
-        $payments = $this->apartment->payments()->orderBy('payment_date', 'desc')->get();
+        $payments = $this->apartment->payments()->with('user')->orderBy('payment_date', 'desc')->get();
         $tenants = User::where('role', 'tenant')->orderBy('name')->get();
 
         return view('livewire.edit-apartment-component', [
@@ -138,3 +146,4 @@ class EditApartmentComponent extends Component
         ]);
     }
 }
+

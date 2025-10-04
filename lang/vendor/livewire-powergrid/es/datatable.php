@@ -3,7 +3,7 @@
 return [
     'buttons' => [
         'filter'            => 'Filtrar',
-        'clear_all_filters' => 'Clear all',
+        'clear_all_filters' => 'Limpiar todos los filtros',
     ],
     'labels' => [
         'action'           => 'Acción',
@@ -43,33 +43,33 @@ return [
         'contains_not' => 'No contiene',
         'starts_with'  => 'Comienza por',
         'ends_with'    => 'Termina en',
-        'is_null'      => 'És nulo',
-        'is_not_null'  => 'No és nulo',
-        'is_blank'     => 'És blanco',
-        'is_not_blank' => 'No és blanco',
-        'is_empty'     => 'Esta relleno',
-        'is_not_empty' => 'No está relleno',
+        'is_null'      => 'Es nulo',
+        'is_not_null'  => 'No es nulo',
+        'is_blank'     => 'Está en blanco',
+        'is_not_blank' => 'No está en blanco',
+        'is_empty'     => 'Está vacío',
+        'is_not_empty' => 'No está vacío',
     ],
     'export' => [
         'exporting' => '¡Espere por favor!',
         'completed' => '¡Exportación completada! Tus archivos están listos para descargar',
     ],
     'soft_deletes' => [
-        'message_with_trashed' => 'Displaying all records, including deleted ones.',
-        'message_only_trashed' => 'Displaying only deleted records.',
-        'without_trashed'      => 'Without deleted',
-        'with_trashed'         => 'With deleted',
-        'only_trashed'         => 'Only deleted',
+        'message_with_trashed' => 'Mostrando todos los registros, incluyendo los eliminados.',
+        'message_only_trashed' => 'Mostrando solo los registros eliminados.',
+        'without_trashed'      => 'Sin eliminados',
+        'with_trashed'         => 'Con eliminados',
+        'only_trashed'         => 'Solo eliminados',
     ],
     'multi_sort' => [
-        'message' => 'Multiple sort is active',
+        'message' => 'Ordenamiento múltiple activo',
     ],
     'buttons_macros' => [
         'confirm' => [
-            'message' => 'Are you sure you want to perform this action?',
+            'message' => '¿Está seguro de que desea realizar esta acción?',
         ],
         'confirm_prompt' => [
-            'message' => "Are you sure you want to perform this action? \n\n Enter :confirmValue to confirm.",
+            'message' => "¿Está seguro de que desea realizar esta acción? \n\n Ingrese :confirmValue para confirmar.",
         ],
     ],
 ];

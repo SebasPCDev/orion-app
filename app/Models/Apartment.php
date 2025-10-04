@@ -30,6 +30,7 @@ class Apartment extends Model
         'floor',
         'unit_number',
         'amenities',
+        'images', // Agregar este campo
         'status',
     ];
 
@@ -45,6 +46,7 @@ class Apartment extends Model
             'is_rented' => 'boolean',
             'area' => 'decimal:2',
             'amenities' => 'array',
+            'images' => 'array', // Agregar este cast
         ];
     }
 

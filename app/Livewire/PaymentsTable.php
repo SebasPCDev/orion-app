@@ -9,16 +9,29 @@ use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Facades\Filter;
+use App\Models\User;
+use App\Models\Apartment;
 
 final class PaymentsTable extends PowerGridComponent
 {
     public string $tableName = 'payments-table-223sc3-table';
+    public bool $showFilters = true;
+    public $rentedApartments;
+    public $user_name_filter;
+    public $apartment_name;
+    public $month;
 
 
     public function setUp(): array
     {
-
-        return [];
+        $this->user_name_filter = User::all();
+        $this->apartment_name = Apartment::all();
+        $this->rentedApartments = $this->rentedApartments;
+        return [
+            PowerGrid::footer()
+                ->showPerPage(200, ['100', '200', '500', '1000']) 
+        ];
     }
 
     public function datasource(): Builder
@@ -82,18 +95,42 @@ final class PaymentsTable extends PowerGridComponent
         ];
     }
 
-    // public function filters(): array
-    // {
-    //     return [
-    //         Filter::datepicker('payment_date'),
-    //     ];
-    // }
-
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
+    public function filters(): array
     {
-        $this->js('alert('.$rowId.')');
+        return [
+            Filter::select('user_name', 'users.id')
+            ->dataSource($this->user_name_filter)
+            ->optionLabel('name')
+            ->optionValue('id'),
+            Filter::select('apartment_name', 'apartments.id')
+            ->dataSource($this->apartment_name)
+            ->optionLabel('name')
+            ->optionValue('id'),
+            Filter::select('month', 'month')
+                ->dataSource([
+                    ['id' => 'Enero', 'name' => 'Enero'],
+                    ['id' => 'Febrero', 'name' => 'Febrero'],
+                    ['id' => 'Marzo', 'name' => 'Marzo'],
+                    ['id' => 'Abril', 'name' => 'Abril'],
+                    ['id' => 'Mayo', 'name' => 'Mayo'],
+                    ['id' => 'Junio', 'name' => 'Junio'],
+                    ['id' => 'Julio', 'name' => 'Julio'],
+                    ['id' => 'Agosto', 'name' => 'Agosto'],
+                    ['id' => 'Septiembre', 'name' => 'Septiembre'],
+                    ['id' => 'Octubre', 'name' => 'Octubre'],
+                    ['id' => 'Noviembre', 'name' => 'Noviembre'],
+                    ['id' => 'Diciembre', 'name' => 'Diciembre'],
+                ])
+                ->optionLabel('name')
+                ->optionValue('id'),
+        ];
     }
+
+    // #[\Livewire\Attributes\On('edit')]
+    // public function edit($rowId): void
+    // {
+    //     $this->js('alert('.$rowId.')');
+    // }
 
     // public function actions(Payment $row): array
     // {

@@ -8,11 +8,10 @@
         </div>
         <livewire:dashboard-metrics />
         <livewire:payments-table />
+
     </div>
 
-    <flux:modal name="create-payment-modal" class="md:w-[32rem]">
-        <livewire:create-payment-modal />
-    </flux:modal>
+
 
 </x-layouts.app>
 

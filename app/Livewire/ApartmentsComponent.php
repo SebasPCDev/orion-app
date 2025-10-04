@@ -67,13 +67,8 @@ class ApartmentsComponent extends Component
         session()->flash('message', 'Apartamento eliminado exitosamente.');
     }
 
-    public function toggleRentStatus(Apartment $apartment): void
+    public function editApartment(Apartment $apartment)
     {
-        $apartment->update([
-            'is_rented' => !$apartment->is_rented,
-            'status' => !$apartment->is_rented ? 'rented' : 'available'
-        ]);
-        
-        session()->flash('message', 'Estado del apartamento actualizado.');
+        return redirect()->route('apartments.edit', $apartment->id);
     }
 }
