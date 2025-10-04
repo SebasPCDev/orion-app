@@ -73,6 +73,14 @@
 
     <!-- Filters -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
+        <div class="flex items-end justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Filtros</h3>
+            @if($search || $blockFilter || $statusFilter)
+                <flux:button variant="ghost" wire:click="clearFilters">
+                    Limpiar filtros
+                </flux:button>
+            @endif
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Search -->
             <flux:input 

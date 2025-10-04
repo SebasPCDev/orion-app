@@ -1,9 +1,10 @@
 @props([
-    'apartment',
+    'apartment' => [],
     'width' => 'w-80',
     'height' => 'h-auto',
     'showActions' => true
 ])
+
 
 <div class="group relative bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700 {{ $width }} {{ $height }}">
     <div class="p-6 h-full flex flex-col cursor-pointer" wire:navigate href="{{ route('apartments.edit', $apartment->id) }}">

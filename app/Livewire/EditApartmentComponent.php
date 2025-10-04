@@ -11,11 +11,13 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
+use App\Traits\WithToastNotifications;
 
 #[Layout('components.layouts.app')]
 #[Title('Editar Apartamento')]
 class EditApartmentComponent extends Component
 {
+    use WithToastNotifications;
     public Apartment $apartment;
 
     // Apartment properties
@@ -92,8 +94,11 @@ class EditApartmentComponent extends Component
             'name', 'address', 'price', 'is_rented', 'block', 'description', 
             'bedrooms', 'bathrooms', 'area', 'floor', 'unit_number', 'amenities', 'images', 'status'
         ]));
-        session()->flash('message', 'Apartamento actualizado exitosamente.');
-        $this->redirectRoute('apartments.index', navigate: true);
+        
+        $this->toastSuccess(
+            'Apartamento actualizado exitosamente',
+            'El apartamento ha sido actualizado.'
+        );
     }
     
     public function addPayment()

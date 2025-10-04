@@ -43,10 +43,6 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
                                             </svg>
                                         </div>
-                                        <!-- Número de imagen -->
-                                        <div class="absolute top-1 right-1 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
-                                            {{ $index + 1 }}
-                                        </div>
                                     </div>
                                 </div>
                             @endforeach
@@ -97,45 +93,75 @@
             @endif
         </div>
 
-        <div class="flex flex-col items-start w-full">
+        <div class="flex flex-col items-start w-full" x-data="apartmentEditController()" @apartment-saved.window="handleSaveSuccess()">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
                 <form wire:submit.prevent="save" class="space-y-6">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Información del Inmueble</h2>
-                        <flux:checkbox wire:model.defer="is_rented" label="¿Arrendado?" disabled />
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-600 dark:text-gray-400" x-text="editMode ? 'Modo Edición' : 'Solo Lectura'"></span>
+                            <span x-show="editMode && detectChanges()" class="text-xs px-2 py-1 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300 rounded-full" style="display: none;">
+                                Cambios sin guardar
+                            </span>
+                            <button 
+                                type="button"
+                                @click="toggleEditMode()"
+                                class="inline-flex items-center p-2 rounded-lg transition-colors duration-200"
+                                x-bind:class="editMode ? 'bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600'"
+                                x-bind:title="editMode ? 'Deshabilitar edición' : 'Habilitar edición'"
+                            >
+                                <svg x-show="!editMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                </svg>
+                                <svg x-show="editMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <flux:input wire:model.defer="name" label="Nombre" type="text" required disabled/>
-                        <flux:input wire:model.defer="address" label="Dirección" type="text" required disabled/>
-                        <flux:input icon="currency-dollar" label="Precio" x-mask:dynamic="$money($input)" wire:model.defer="price" required disabled />
-                        <flux:input wire:model.defer="block" label="Bloque" type="text"  disabled/>
+                        <flux:input wire:model.defer="name" label="Nombre" type="text" required x-bind:disabled="!editMode"/>
+                        <flux:input wire:model.defer="address" label="Dirección" type="text" required x-bind:disabled="!editMode"/>
+                        <flux:input icon="currency-dollar" label="Precio" x-mask:dynamic="$money($input)" wire:model.defer="price" required x-bind:disabled="!editMode" />
+                        <flux:input wire:model.defer="block" label="Bloque" type="text" x-bind:disabled="!editMode"/>
                     </div>
-                    <flux:textarea wire:model.defer="description" label="Descripción" rows="3" disabled/>
+                   
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                        <flux:input wire:model.defer="bedrooms" label="Habitaciones" type="number" min="0" disabled />
-                        <flux:input wire:model.defer="bathrooms" label="Baños" type="number" min="0" disabled />
-                        <flux:input wire:model.defer="area" label="Área (m²)" type="number" min="0" step="0.01" disabled />
-                        <flux:input wire:model.defer="floor" label="Piso" type="text" disabled />
-                        <flux:input wire:model.defer="unit_number" label="Número de unidad" type="text" disabled />
+                        <flux:input wire:model.defer="bedrooms" label="Habitaciones" type="number" min="0" x-bind:disabled="!editMode" />
+                        <flux:input wire:model.defer="bathrooms" label="Baños" type="number" min="0" x-bind:disabled="!editMode" />
+                        <flux:input wire:model.defer="area" label="Área (m²)" type="number" min="0" step="0.01" x-bind:disabled="!editMode" />
+                        <flux:input wire:model.defer="floor" label="Piso" type="text" x-bind:disabled="!editMode" />
+                        <flux:input wire:model.defer="unit_number" label="Número de unidad" type="text" x-bind:disabled="!editMode" />
                     </div>
+                    
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Amenidades</label>
                         <div class="flex flex-wrap gap-2">
                             @foreach($allAmenities as $amenity)
-                                <flux:checkbox wire:model.defer="amenities" value="{{ $amenity }}" label="{{ $amenity }}" disabled />
+                                <flux:checkbox wire:model.defer="amenities" value="{{ $amenity }}" label="{{ $amenity }}" x-bind:disabled="!editMode" />
                             @endforeach
                         </div>
                     </div>
+                    <flux:textarea wire:model.defer="description" label="Descripción" rows="3" x-bind:disabled="!editMode"/>
                     <div>
-                        <flux:select wire:model.defer="status" label="Estado" disabled>
+                        <flux:select wire:model.defer="status" label="Estado" x-bind:disabled="!editMode">
                             @foreach($statusOptions as $key => $label)
                                 <option value="{{ $key }}">{{ $label }}</option>
                             @endforeach
                         </flux:select>
                     </div>
                     <div class="flex justify-end">
-                        <flux:button type="submit" variant="primary" disabled>Guardar Cambios</flux:button>
+                        <flux:button 
+                            type="submit" 
+                            variant="primary" 
+                            x-bind:disabled="!editMode" 
+                            x-show="editMode" 
+                            style="display: none;"
+                            @click="setTimeout(() => { editMode = false; }, 100)"
+                        >
+                            Guardar Cambios
+                        </flux:button>
                     </div>
                 </form>
             </div>
@@ -182,3 +208,114 @@
         </div>
     </div>
 </div>
+
+<script>
+    function apartmentEditController() {
+        return {
+            editMode: false,
+            originalValues: {},
+            hasChanges: false,
+            
+            init() {
+                // Detectar cambios en tiempo real
+                this.$watch('editMode', value => {
+                    if (value) {
+                        // Pequeño delay para asegurar que los valores estén sincronizados
+                        setTimeout(() => this.captureOriginalValues(), 50);
+                    }
+                });
+            },
+            
+            // Función para capturar valores originales
+            captureOriginalValues() {
+                this.originalValues = {
+                    name: this.$wire.name,
+                    address: this.$wire.address,
+                    price: this.$wire.price,
+                    block: this.$wire.block,
+                    bedrooms: this.$wire.bedrooms,
+                    bathrooms: this.$wire.bathrooms,
+                    area: this.$wire.area,
+                    floor: this.$wire.floor,
+                    unit_number: this.$wire.unit_number,
+                    description: this.$wire.description,
+                    status: this.$wire.status,
+                    amenities: [...this.$wire.amenities]
+                };
+            },
+            
+            // Función para detectar cambios
+            detectChanges() {
+                const current = {
+                    name: this.$wire.name,
+                    address: this.$wire.address,
+                    price: this.$wire.price,
+                    block: this.$wire.block,
+                    bedrooms: this.$wire.bedrooms,
+                    bathrooms: this.$wire.bathrooms,
+                    area: this.$wire.area,
+                    floor: this.$wire.floor,
+                    unit_number: this.$wire.unit_number,
+                    description: this.$wire.description,
+                    status: this.$wire.status,
+                    amenities: [...this.$wire.amenities]
+                };
+                
+                // Comparar valores
+                for (let key in this.originalValues) {
+                    if (key === 'amenities') {
+                        // Comparación especial para arrays
+                        if (JSON.stringify(this.originalValues[key].sort()) !== JSON.stringify(current[key].sort())) {
+                            return true;
+                        }
+                    } else {
+                        if (this.originalValues[key] != current[key]) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            },
+            
+            // Función para alternar modo edición
+            toggleEditMode() {
+                if (this.editMode) {
+                    // Intentando salir del modo edición
+                    if (this.detectChanges()) {
+                        // Hay cambios, mostrar confirmación
+                        if (confirm('¿Estás seguro de que deseas salir del modo edición? Los cambios no guardados se perderán.')) {
+                            // Usuario confirma, restaurar valores originales
+                            this.$wire.name = this.originalValues.name;
+                            this.$wire.address = this.originalValues.address;
+                            this.$wire.price = this.originalValues.price;
+                            this.$wire.block = this.originalValues.block;
+                            this.$wire.bedrooms = this.originalValues.bedrooms;
+                            this.$wire.bathrooms = this.originalValues.bathrooms;
+                            this.$wire.area = this.originalValues.area;
+                            this.$wire.floor = this.originalValues.floor;
+                            this.$wire.unit_number = this.originalValues.unit_number;
+                            this.$wire.description = this.originalValues.description;
+                            this.$wire.status = this.originalValues.status;
+                            this.$wire.amenities = [...this.originalValues.amenities];
+                            this.editMode = false;
+                        }
+                        // Si no confirma, mantener modo edición
+                    } else {
+                        // No hay cambios, salir normalmente
+                        this.editMode = false;
+                    }
+                } else {
+                    // Entrando en modo edición, capturar valores originales
+                    this.captureOriginalValues();
+                    this.editMode = true;
+                }
+            },
+            
+            // Función para manejar el guardado exitoso
+            handleSaveSuccess() {
+                this.editMode = false;
+                this.originalValues = {};
+            }
+        }
+    }
+</script>

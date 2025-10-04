@@ -4,6 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Apartment;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class ApartmentsComponent extends Component
@@ -18,9 +20,22 @@ class ApartmentsComponent extends Component
         'statusFilter' => ['except' => ''],
     ];
 
-    public function render(): View
+    protected $listeners = [
+        'apartmentUpdated' => '$refresh',
+        'apartmentCreated' => '$refresh',
+        'apartmentDeleted' => '$refresh',
+    ];
+
+    public function mount(): void
     {
-        $apartments = Apartment::query()
+        // Inicialización del componente si es necesario
+        // Por ejemplo, validar permisos, configurar valores por defecto, etc.
+    }
+
+    #[Computed]
+    public function apartments(): Collection
+    {
+        return Apartment::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
@@ -41,34 +56,65 @@ class ApartmentsComponent extends Component
             ->orderBy('block')
             ->orderBy('name')
             ->get();
+    }
 
-        // Group apartments by block
-        $apartmentsByBlock = $apartments->groupBy('block');
+    #[Computed]
+    public function apartmentsByBlock(): Collection
+    {
+        return $this->apartments->groupBy('block');
+    }
+
+    #[Computed]
+    public function blocks(): Collection
+    {
+        return Apartment::distinct()
+            ->pluck('block')
+            ->filter()
+            ->sort()
+            ->values();
+    }
+
+    #[Computed]
+    public function stats(): array
+    {
+        // Optimización: usar una sola query para obtener todas las estadísticas
+        $allApartments = Apartment::select('is_rented', 'price')->get();
         
-        $blocks = Apartment::distinct()->pluck('block')->filter()->sort()->values();
-        
-        $stats = [
-            'total' => Apartment::count(),
-            'available' => Apartment::where('is_rented', false)->count(),
-            'rented' => Apartment::where('is_rented', true)->count(),
-            'monthly_income' => Apartment::sum('price'),
+        return [
+            'total' => $allApartments->count(),
+            'available' => $allApartments->where('is_rented', false)->count(),
+            'rented' => $allApartments->where('is_rented', true)->count(),
+            'monthly_income' => $allApartments->sum('price'),
         ];
+    }
 
+    public function clearFilters(): void
+    {
+        $this->reset(['search', 'blockFilter', 'statusFilter']);
+    }
+
+    public function updatedSearch(): void
+    {
+        // Se ejecuta cuando cambia el search
+        // Útil para analytics o logging
+    }
+
+    public function updatedBlockFilter(): void
+    {
+        // Se ejecuta cuando cambia el filtro de bloque
+    }
+
+    public function updatedStatusFilter(): void
+    {
+        // Se ejecuta cuando cambia el filtro de estado
+    }
+
+    public function render(): View
+    {
         return view('livewire.apartments-component', [
-            'apartmentsByBlock' => $apartmentsByBlock,
-            'blocks' => $blocks,
-            'stats' => $stats,
+            'apartmentsByBlock' => $this->apartmentsByBlock,
+            'blocks' => $this->blocks,
+            'stats' => $this->stats,
         ]);
-    }
-
-    public function deleteApartment(Apartment $apartment): void
-    {
-        $apartment->delete();
-        session()->flash('message', 'Apartamento eliminado exitosamente.');
-    }
-
-    public function editApartment(Apartment $apartment)
-    {
-        return redirect()->route('apartments.edit', $apartment->id);
     }
 }
