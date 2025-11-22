@@ -78,12 +78,13 @@ class ApartmentsComponent extends Component
     public function stats(): array
     {
         // Optimización: usar una sola query para obtener todas las estadísticas
-        $allApartments = Apartment::select('is_rented', 'price')->get();
+        $allApartments = Apartment::select('status', 'price')->get();
         
         return [
             'total' => $allApartments->count(),
-            'available' => $allApartments->where('is_rented', false)->count(),
-            'rented' => $allApartments->where('is_rented', true)->count(),
+            'available' => $allApartments->where('status', 'available')->count(),
+            'rented' => $allApartments->where('status', 'rented')->count(),
+            'maintenance' => $allApartments->where('status', 'maintenance')->count(),
             'monthly_income' => $allApartments->sum('price'),
         ];
     }

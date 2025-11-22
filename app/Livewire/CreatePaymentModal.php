@@ -25,21 +25,20 @@ class CreatePaymentModal extends Component
     public function getRemainingMonths()
     {
         $currentMonth = Carbon::now()->month;
-        $currentYear = Carbon::now()->year;
         $months = [];
-        
+
         // Array de nombres de meses en español
         $monthNames = [
             1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
             5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
             9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
         ];
-        
+
         // Generar meses desde el mes actual hasta diciembre
-        for ($i = $currentMonth - 1; $i <= 12; $i++) {
+        for ($i = $currentMonth; $i <= 12; $i++) {
             $months[$monthNames[$i]] = $monthNames[$i];
         }
-        
+
         return $months;
     }
 
@@ -54,10 +53,6 @@ class CreatePaymentModal extends Component
 
     public function updatedApartmentId($value)
     {
-        sleep(1); // TODO: Remove this
-
-        //Reset the amount
-
         $selectedApartment = Apartment::find($value); 
         if ($selectedApartment && $selectedApartment->user) {
             $this->tenant_name = $selectedApartment->user->name;

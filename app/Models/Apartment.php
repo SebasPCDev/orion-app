@@ -46,8 +46,37 @@ class Apartment extends Model
             'is_rented' => 'boolean',
             'area' => 'decimal:2',
             'amenities' => 'array',
-            'images' => 'array', // Agregar este cast
+            'images' => 'array',
         ];
+    }
+
+    /**
+     * Sincroniza is_rented con status cuando se actualiza is_rented.
+     */
+    public function setIsRentedAttribute($value)
+    {
+        $this->attributes['is_rented'] = $value;
+
+        // Sincronizar status solo si no esta en mantenimiento
+        if (!isset($this->attributes['status']) || $this->attributes['status'] !== 'maintenance') {
+            $this->attributes['status'] = $value ? 'rented' : 'available';
+        }
+    }
+
+    /**
+     * Sincroniza is_rented con status cuando se actualiza status.
+     */
+    public function setStatusAttribute($value)
+    {
+        $this->attributes['status'] = $value;
+
+        // Sincronizar is_rented basado en status
+        if ($value === 'rented') {
+            $this->attributes['is_rented'] = true;
+        } elseif ($value === 'available') {
+            $this->attributes['is_rented'] = false;
+        }
+        // Si es 'maintenance', no cambiamos is_rented
     }
 
     /**
@@ -105,7 +134,11 @@ class Apartment extends Model
      */
     public function getStatusTextAttribute(): string
     {
-        return $this->is_rented ? 'Arrendado' : 'Disponible';
+        return match ($this->status) {
+            'rented' => 'Arrendado',
+            'maintenance' => 'En Mantenimiento',
+            default => 'Disponible',
+        };
     }
 
     /**

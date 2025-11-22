@@ -39,6 +39,7 @@ class EditApartmentComponent extends Component
     // Payment properties
     public $amount;
     public $payment_date;
+    public $payment_month;
     public $payment_description;
 
     // Tenant properties
@@ -74,6 +75,7 @@ class EditApartmentComponent extends Component
             'status' => ['required', Rule::in(['available', 'rented', 'maintenance'])],
             'amount' => ['nullable', 'numeric', 'min:0'],
             'payment_date' => ['nullable', 'date'],
+            'payment_month' => ['nullable', 'string'],
             'payment_description' => ['nullable', 'string'],
         ];
     }
@@ -106,18 +108,20 @@ class EditApartmentComponent extends Component
         $this->validate([
             'amount' => 'required|numeric|min:0',
             'payment_date' => 'required|date',
+            'payment_month' => 'required|string',
             'payment_description' => 'nullable|string',
         ]);
 
         $this->apartment->payments()->create([
-            'user_id' => Auth::id(),
+            'user_id' => $this->apartment->user_id,
             'amount' => $this->amount,
             'payment_date' => $this->payment_date,
+            'month' => $this->payment_month,
             'description' => $this->payment_description,
-            'status' => 'completed',
+            'status' => 'pagado',
         ]);
 
-        $this->reset(['amount', 'payment_date', 'payment_description']);
+        $this->reset(['amount', 'payment_date', 'payment_month', 'payment_description']);
         $this->dispatch('payment-added');
     }
 
