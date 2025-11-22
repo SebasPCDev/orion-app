@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\Auditable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,7 +16,15 @@ use Illuminate\Support\Str;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Auditable;
+
+    /**
+     * Fields to exclude from audit logging.
+     */
+    protected array $auditExclude = [
+        'password',
+        'remember_token',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +41,7 @@ class User extends Authenticatable
         'status',
         'payment_status',
         'backup_phone',
+        'cutoff_day',
     ];
 
     /**
@@ -88,5 +99,158 @@ class User extends Authenticatable
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Get the current cutoff date for this tenant.
+     * Returns the most recent cutoff date (could be this month or last month).
+     */
+    public function getCurrentCutoffDate(): ?Carbon
+    {
+        if (!$this->cutoff_day) {
+            return null;
+        }
+
+        $today = Carbon::today();
+        $cutoffDay = min($this->cutoff_day, $today->daysInMonth);
+
+        // Create cutoff date for current month
+        $cutoffDate = $today->copy()->day($cutoffDay)->startOfDay();
+
+        // If we haven't reached this month's cutoff yet, use last month's
+        if ($today->lt($cutoffDate)) {
+            $lastMonth = $today->copy()->subMonth();
+            $cutoffDay = min($this->cutoff_day, $lastMonth->daysInMonth);
+            $cutoffDate = $lastMonth->day($cutoffDay)->startOfDay();
+        }
+
+        return $cutoffDate;
+    }
+
+    /**
+     * Get the next cutoff date for this tenant.
+     */
+    public function getNextCutoffDate(): ?Carbon
+    {
+        if (!$this->cutoff_day) {
+            return null;
+        }
+
+        $today = Carbon::today();
+        $cutoffDay = min($this->cutoff_day, $today->daysInMonth);
+
+        // Create cutoff date for current month
+        $cutoffDate = $today->copy()->day($cutoffDay)->startOfDay();
+
+        // If we've passed this month's cutoff, get next month's
+        if ($today->gte($cutoffDate)) {
+            $nextMonth = $today->copy()->addMonth();
+            $cutoffDay = min($this->cutoff_day, $nextMonth->daysInMonth);
+            $cutoffDate = $nextMonth->day($cutoffDay)->startOfDay();
+        }
+
+        return $cutoffDate;
+    }
+
+    /**
+     * Check if tenant has a complete payment for the current period.
+     */
+    public function hasPaymentForCurrentPeriod(): bool
+    {
+        $currentCutoff = $this->getCurrentCutoffDate();
+        $nextCutoff = $this->getNextCutoffDate();
+
+        if (!$currentCutoff || !$nextCutoff) {
+            return false;
+        }
+
+        // Get the apartment's price
+        $apartment = $this->apartment;
+        if (!$apartment) {
+            return false;
+        }
+
+        // Check if there's a payment in the current period that covers the rent
+        return $this->payments()
+            ->where('apartment_id', $apartment->id)
+            ->whereBetween('payment_date', [$currentCutoff, $nextCutoff->subDay()])
+            ->where('amount', '>=', $apartment->price)
+            ->exists();
+    }
+
+    /**
+     * Get the number of days since the current cutoff date.
+     */
+    public function getDaysSinceCutoff(): int
+    {
+        $currentCutoff = $this->getCurrentCutoffDate();
+
+        if (!$currentCutoff) {
+            return 0;
+        }
+
+        return max(0, Carbon::today()->diffInDays($currentCutoff));
+    }
+
+    /**
+     * Get the payment status for this tenant.
+     * Returns: 'al_dia', 'pendiente', 'moroso', or null if not applicable.
+     */
+    public function getPaymentStatusCalculatedAttribute(): ?string
+    {
+        // Only applies to tenants with cutoff day and an apartment
+        if ($this->role !== 'tenant' || !$this->cutoff_day || !$this->apartment) {
+            return null;
+        }
+
+        // Check if has payment for current period
+        if ($this->hasPaymentForCurrentPeriod()) {
+            return 'al_dia';
+        }
+
+        // Calculate days since cutoff
+        $daysSinceCutoff = $this->getDaysSinceCutoff();
+
+        // More than 10 days = moroso
+        if ($daysSinceCutoff > 10) {
+            return 'moroso';
+        }
+
+        // 0-10 days = pendiente
+        return 'pendiente';
+    }
+
+    /**
+     * Get the payment status label in Spanish.
+     */
+    public function getPaymentStatusLabelAttribute(): ?string
+    {
+        return match ($this->payment_status_calculated) {
+            'al_dia' => 'Al día',
+            'pendiente' => 'Pendiente',
+            'moroso' => 'Moroso',
+            default => null,
+        };
+    }
+
+    /**
+     * Get the payment status color for badges.
+     */
+    public function getPaymentStatusColorAttribute(): ?string
+    {
+        return match ($this->payment_status_calculated) {
+            'al_dia' => 'emerald',
+            'pendiente' => 'amber',
+            'moroso' => 'red',
+            default => 'zinc',
+        };
+    }
+
+    /**
+     * Scope to filter tenants only.
+     */
+    public function scopeTenants($query)
+    {
+        return $query->where('role', 'tenant');
     }
 }

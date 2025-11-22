@@ -280,18 +280,6 @@
                         </div>
                     </div>
 
-                    {{-- Table Header --}}
-                    <div class="hidden sm:grid sm:grid-cols-12 gap-4 px-4 py-2 bg-gray-50/50 dark:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700/50 text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
-                        <div class="col-span-4 flex items-center gap-2">
-                            <span class="w-2"></span>
-                            Propiedad
-                        </div>
-                        <div class="col-span-2">Detalles</div>
-                        <div class="col-span-3">Inquilino</div>
-                        <div class="col-span-2 text-right">Precio</div>
-                        <div class="col-span-1"></div>
-                    </div>
-
                     {{-- Apartments List --}}
                     <div class="divide-y divide-gray-100 dark:divide-gray-700/50">
                         @foreach($apartments as $apartment)

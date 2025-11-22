@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\User;
 use App\Traits\WithToastNotifications;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class TenantsComponent extends Component
@@ -14,18 +15,16 @@ class TenantsComponent extends Component
     // Filters
     public string $search = '';
     public string $paymentStatusFilter = '';
-    public string $statusFilter = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
         'paymentStatusFilter' => ['except' => ''],
-        'statusFilter' => ['except' => ''],
     ];
 
     #[Computed]
     public function tenants()
     {
-        return User::query()
+        $tenants = User::query()
             ->where('role', 'tenant')
             ->with('apartment')
             ->when($this->search, function ($query) {
@@ -36,37 +35,57 @@ class TenantsComponent extends Component
                         ->orWhere('identification_number', 'like', '%' . $this->search . '%');
                 });
             })
-            ->when($this->paymentStatusFilter, function ($query) {
-                $query->where('payment_status', $this->paymentStatusFilter);
-            })
-            ->when($this->statusFilter, function ($query) {
-                $query->where('status', $this->statusFilter);
-            })
             ->orderBy('name')
             ->get();
+
+        // Filter by calculated payment status if needed
+        if ($this->paymentStatusFilter) {
+            $tenants = $tenants->filter(function ($tenant) {
+                return $tenant->payment_status_calculated === $this->paymentStatusFilter;
+            });
+        }
+
+        return $tenants;
     }
 
     #[Computed]
     public function stats(): array
     {
-        $tenants = User::where('role', 'tenant')->get();
+        $tenants = User::where('role', 'tenant')->with('apartment')->get();
 
         return [
             'total' => $tenants->count(),
-            'alDia' => $tenants->where('payment_status', 'Al día')->count(),
-            'enRetraso' => $tenants->where('payment_status', 'Retraso')->count(),
-            'morosos' => $tenants->where('payment_status', 'Moroso')->count(),
+            'alDia' => $tenants->filter(fn($t) => $t->payment_status_calculated === 'al_dia')->count(),
+            'pendientes' => $tenants->filter(fn($t) => $t->payment_status_calculated === 'pendiente')->count(),
+            'morosos' => $tenants->filter(fn($t) => $t->payment_status_calculated === 'moroso')->count(),
+            'sinAsignar' => $tenants->filter(fn($t) => !$t->apartment)->count(),
         ];
     }
 
     public function getPaymentStatusesProperty(): array
     {
-        return ['Al día', 'Retraso', 'Moroso'];
+        return [
+            'al_dia' => 'Al día',
+            'pendiente' => 'Pendiente',
+            'moroso' => 'Moroso',
+        ];
+    }
+
+    public function openCreateModal(): void
+    {
+        $this->dispatch('open-create-tenant-modal');
+    }
+
+    #[On('tenant-created')]
+    public function handleTenantCreated(): void
+    {
+        unset($this->tenants);
+        unset($this->stats);
     }
 
     public function clearFilters(): void
     {
-        $this->reset(['search', 'paymentStatusFilter', 'statusFilter']);
+        $this->reset(['search', 'paymentStatusFilter']);
     }
 
     public function render()
