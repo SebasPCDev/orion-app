@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\ApartmentStatus;
 use App\Models\Apartment;
 use App\Models\Payment;
 use App\Models\User;
@@ -24,7 +25,6 @@ class EditApartmentComponent extends Component
     public string $name = '';
     public string $address = '';
     public $price = '';
-    public bool $is_rented = false;
     public ?string $block = '';
     public ?string $description = '';
     public $bedrooms = '';
@@ -33,7 +33,7 @@ class EditApartmentComponent extends Component
     public ?string $floor = '';
     public ?string $unit_number = '';
     public array $amenities = [];
-    public array $images = []; // Agregar esta propiedad
+    public array $images = [];
     public string $status = 'available';
 
     // Payment properties
@@ -62,7 +62,6 @@ class EditApartmentComponent extends Component
             'name' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:0'],
-            'is_rented' => ['boolean'],
             'block' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'bedrooms' => ['nullable', 'integer', 'min:0'],
@@ -93,7 +92,7 @@ class EditApartmentComponent extends Component
             'price' => ['required', 'numeric', 'min:0'],
         ]);
         $this->apartment->update($this->only([
-            'name', 'address', 'price', 'is_rented', 'block', 'description', 
+            'name', 'address', 'price', 'block', 'description',
             'bedrooms', 'bathrooms', 'area', 'floor', 'unit_number', 'amenities', 'images', 'status'
         ]));
         
@@ -124,14 +123,12 @@ class EditApartmentComponent extends Component
         // Update apartment: remove tenant and set as available
         $this->apartment->update([
             'user_id' => null,
-            'status' => 'available',
-            'is_rented' => false,
+            'status' => ApartmentStatus::AVAILABLE,
         ]);
 
         // Refresh local state
         $this->tenant_id = null;
-        $this->status = 'available';
-        $this->is_rented = false;
+        $this->status = ApartmentStatus::AVAILABLE->value;
 
         $this->dispatch('apartment-vacated');
         $this->toastSuccess(

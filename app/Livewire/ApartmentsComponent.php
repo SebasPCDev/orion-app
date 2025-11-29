@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\ApartmentStatus;
 use App\Models\Apartment;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -48,9 +49,9 @@ class ApartmentsComponent extends Component
             })
             ->when($this->statusFilter, function ($query) {
                 if ($this->statusFilter === 'available') {
-                    $query->where('is_rented', false);
+                    $query->where('status', ApartmentStatus::AVAILABLE);
                 } elseif ($this->statusFilter === 'rented') {
-                    $query->where('is_rented', true);
+                    $query->where('status', ApartmentStatus::RENTED);
                 }
             })
             ->orderBy('block')

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ApartmentStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -54,7 +55,6 @@ class ApartmentFactory extends Factory
             'name' => $this->generateApartmentName($block),
             'address' => 'Garzón - Huila',
             'price' => $this->faker->numberBetween(300000, 1200000),
-            'is_rented' => $this->faker->boolean(80), // 80% probability of being rented
             'block' => $block,
             'description' => $this->faker->paragraph(),
             'bedrooms' => $this->faker->numberBetween(1, 4),
@@ -63,11 +63,15 @@ class ApartmentFactory extends Factory
             'floor' => $this->faker->numberBetween(1, 5),
             'unit_number' => $this->faker->numberBetween(101, 999),
             'amenities' => $this->faker->randomElements([
-                'WiFi', 'Estacionamiento', 'Ascensor', 'Seguridad 24/7', 
+                'WiFi', 'Estacionamiento', 'Ascensor', 'Seguridad 24/7',
                 'Área de lavandería', 'Balcón', 'Closet', 'Cocina equipada'
             ], $this->faker->numberBetween(2, 5)),
             'images' => $this->generateMockImages(),
-            'status' => $this->faker->randomElement(['available', 'rented', 'maintenance']),
+            'status' => $this->faker->randomElement([
+                ApartmentStatus::AVAILABLE->value,
+                ApartmentStatus::RENTED->value,
+                ApartmentStatus::MAINTENANCE->value,
+            ]),
             'user_id' => User::factory(),
         ];
     }
@@ -98,8 +102,7 @@ class ApartmentFactory extends Factory
     public function available(): static
     {
         return $this->state(fn (array $attributes) => [
-            'is_rented' => false,
-            'status' => 'available',
+            'status' => ApartmentStatus::AVAILABLE->value,
         ]);
     }
 
@@ -109,8 +112,7 @@ class ApartmentFactory extends Factory
     public function rented(): static
     {
         return $this->state(fn (array $attributes) => [
-            'is_rented' => true,
-            'status' => 'rented',
+            'status' => ApartmentStatus::RENTED->value,
         ]);
     }
 }

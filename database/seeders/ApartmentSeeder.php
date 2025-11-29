@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ApartmentStatus;
 use App\Models\Apartment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -50,7 +51,7 @@ class ApartmentSeeder extends Seeder
             $this->getIndependientesData()
         );
 
-        $rentedApartmentsCount = collect($allApartmentData)->where('is_rented', true)->count();
+        $rentedApartmentsCount = collect($allApartmentData)->where('status', ApartmentStatus::RENTED->value)->count();
         // Omitimos el usuario con ID 1
         $users = User::where('id', '!=', 1)->get();
 
@@ -64,7 +65,7 @@ class ApartmentSeeder extends Seeder
 
         foreach ($allApartmentData as $aptData) {
             $aptData['user_id'] = null;
-            if ($aptData['is_rented']) {
+            if ($aptData['status'] === ApartmentStatus::RENTED->value) {
                 if ($userIterator->valid()) {
                     $aptData['user_id'] = $userIterator->current()->id;
                     $userIterator->next();
@@ -76,15 +77,37 @@ class ApartmentSeeder extends Seeder
         }
     }
 
+    /**
+     * Seed only empty apartments (not rented).
+     */
+    public function runEmptyOnly(): void
+    {
+        $allApartmentData = array_merge(
+            $this->getReservasDelOrienteData(),
+            $this->getTermitasData(),
+            $this->getCentroGarzonData(),
+            $this->getIndependientesData()
+        );
+
+        // Filter only empty apartments
+        $emptyApartments = collect($allApartmentData)->where('status', ApartmentStatus::AVAILABLE->value);
+
+        foreach ($emptyApartments as $aptData) {
+            $aptData['user_id'] = null;
+            $aptData['images'] = $this->generateMockImages();
+            Apartment::create($aptData);
+        }
+    }
+
     private function getReservasDelOrienteData(): array
     {
         $apartments = [
-            ['name' => 'Apto RO-101', 'price' => 500000, 'is_rented' => true],
-            ['name' => 'Apto RO-102', 'price' => 450000, 'is_rented' => false],
-            ['name' => 'Apto RO-201', 'price' => 650000, 'is_rented' => true],
-            ['name' => 'Apto RO-202', 'price' => 700000, 'is_rented' => true],
-            ['name' => 'Apto Pensión 101', 'price' => 530000, 'is_rented' => true],
-            ['name' => 'Apto Pensión 201', 'price' => 520000, 'is_rented' => true],
+            ['name' => 'Apto RO-101', 'price' => 500000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto RO-102', 'price' => 450000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto RO-201', 'price' => 650000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto RO-202', 'price' => 700000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto Pensión 101', 'price' => 530000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto Pensión 201', 'price' => 520000, 'status' => ApartmentStatus::AVAILABLE->value],
         ];
 
         $data = [];
@@ -93,7 +116,6 @@ class ApartmentSeeder extends Seeder
                 'name' => $apt['name'],
                 'address' => 'Garzón - Huila',
                 'price' => $apt['price'],
-                'is_rented' => $apt['is_rented'],
                 'block' => 'Reservas del Oriente',
                 'description' => 'Apartamento ubicado en el bloque Reservas del Oriente',
                 'bedrooms' => 2,
@@ -102,7 +124,7 @@ class ApartmentSeeder extends Seeder
                 'floor' => is_numeric(substr($apt['name'], -3, 1)) ? substr($apt['name'], -3, 1) : '1',
                 'unit_number' => is_numeric(substr($apt['name'], -3)) ? substr($apt['name'], -3) : null,
                 'amenities' => ['WiFi', 'Estacionamiento', 'Seguridad 24/7'],
-                'status' => $apt['is_rented'] ? 'rented' : 'available',
+                'status' => $apt['status'],
             ];
         }
         return $data;
@@ -111,9 +133,9 @@ class ApartmentSeeder extends Seeder
     private function getTermitasData(): array
     {
         $apartments = [
-            ['name' => 'Apto Termitas 201', 'price' => 370000, 'is_rented' => true],
-            ['name' => 'Apto Termitas 202', 'price' => 400000, 'is_rented' => true],
-            ['name' => 'Apto Termitas 203', 'price' => 420000, 'is_rented' => true],
+            ['name' => 'Apto Termitas 201', 'price' => 370000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto Termitas 202', 'price' => 400000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto Termitas 203', 'price' => 420000, 'status' => ApartmentStatus::AVAILABLE->value],
         ];
 
         $data = [];
@@ -122,7 +144,6 @@ class ApartmentSeeder extends Seeder
                 'name' => $apt['name'],
                 'address' => 'Garzón - Huila',
                 'price' => $apt['price'],
-                'is_rented' => $apt['is_rented'],
                 'block' => 'Termitas',
                 'description' => 'Apartamento ubicado en el bloque Termitas',
                 'bedrooms' => 2,
@@ -131,7 +152,7 @@ class ApartmentSeeder extends Seeder
                 'floor' => substr($apt['name'], -3, 1),
                 'unit_number' => substr($apt['name'], -3),
                 'amenities' => ['WiFi', 'Estacionamiento'],
-                'status' => 'rented',
+                'status' => $apt['status'],
             ];
         }
         return $data;
@@ -140,10 +161,10 @@ class ApartmentSeeder extends Seeder
     private function getCentroGarzonData(): array
     {
         $apartments = [
-            ['name' => 'Apto Zacarias 101', 'price' => 350000, 'is_rented' => true],
-            ['name' => 'Apto Castillo 101', 'price' => 420000, 'is_rented' => true],
-            ['name' => 'Apto Castillo 102', 'price' => 440000, 'is_rented' => true],
-            ['name' => 'Apto Castillo 201', 'price' => 400000, 'is_rented' => true],
+            ['name' => 'Apto Zacarias 101', 'price' => 350000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto Castillo 101', 'price' => 420000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto Castillo 102', 'price' => 440000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Apto Castillo 201', 'price' => 400000, 'status' => ApartmentStatus::AVAILABLE->value],
         ];
 
         $data = [];
@@ -152,7 +173,6 @@ class ApartmentSeeder extends Seeder
                 'name' => $apt['name'],
                 'address' => 'Garzón - Huila',
                 'price' => $apt['price'],
-                'is_rented' => $apt['is_rented'],
                 'block' => 'Centro de Garzón',
                 'description' => 'Apartamento ubicado en el centro de Garzón',
                 'bedrooms' => 2,
@@ -161,7 +181,7 @@ class ApartmentSeeder extends Seeder
                 'floor' => substr($apt['name'], -3, 1),
                 'unit_number' => substr($apt['name'], -3),
                 'amenities' => ['WiFi', 'Estacionamiento', 'Balcón'],
-                'status' => 'rented',
+                'status' => $apt['status'],
             ];
         }
         return $data;
@@ -170,8 +190,8 @@ class ApartmentSeeder extends Seeder
     private function getIndependientesData(): array
     {
         $apartments = [
-            ['name' => 'Casa Tania', 'price' => 560000, 'is_rented' => true],
-            ['name' => 'Casa Juan XXIII', 'price' => 1050000, 'is_rented' => true],
+            ['name' => 'Casa Tania', 'price' => 560000, 'status' => ApartmentStatus::AVAILABLE->value],
+            ['name' => 'Casa Juan XXIII', 'price' => 1050000, 'status' => ApartmentStatus::AVAILABLE->value],
         ];
 
         $data = [];
@@ -180,7 +200,6 @@ class ApartmentSeeder extends Seeder
                 'name' => $apt['name'],
                 'address' => $apt['name'] === 'Casa Juan XXIII' ? 'Florencia - Caquetá' : 'Garzón - Huila',
                 'price' => $apt['price'],
-                'is_rented' => $apt['is_rented'],
                 'block' => 'Independientes',
                 'description' => 'Casa independiente con todas las comodidades',
                 'bedrooms' => 3,
@@ -189,7 +208,7 @@ class ApartmentSeeder extends Seeder
                 'floor' => 1,
                 'unit_number' => null,
                 'amenities' => ['WiFi', 'Estacionamiento', 'Jardín', 'Cocina equipada', 'Closet'],
-                'status' => 'rented',
+                'status' => $apt['status'],
             ];
         }
         return $data;

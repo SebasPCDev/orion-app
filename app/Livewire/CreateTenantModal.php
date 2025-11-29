@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\ApartmentStatus;
 use App\Models\Apartment;
 use App\Models\User;
 use App\Traits\WithToastNotifications;
@@ -102,7 +103,7 @@ class CreateTenantModal extends Component
         $apartment = Apartment::find($this->apartment_id);
         $apartment->update([
             'user_id' => $user->id,
-            'is_rented' => true,
+            'status' => ApartmentStatus::RENTED,
         ]);
 
         $this->close();

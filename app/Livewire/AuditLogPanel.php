@@ -170,7 +170,6 @@ class AuditLogPanel extends Component
             'name' => 'Nombre',
             'address' => 'Dirección',
             'price' => 'Precio',
-            'is_rented' => 'Arrendado',
             'status' => 'Estado',
             'block' => 'Bloque',
             'description' => 'Descripción',

@@ -14,9 +14,9 @@
         <div class="flex-shrink-0">
             <div @class([
                 'w-2 h-2 rounded-full',
-                'bg-emerald-500' => !$apartment->is_rented,
-                'bg-amber-500' => $apartment->is_rented && $apartment->status !== 'maintenance',
-                'bg-gray-400' => $apartment->status === 'maintenance',
+                'bg-emerald-500' => $apartment->status === \App\Enums\ApartmentStatus::AVAILABLE,
+                'bg-amber-500' => $apartment->status === \App\Enums\ApartmentStatus::RENTED,
+                'bg-purple-500' => $apartment->status === \App\Enums\ApartmentStatus::MAINTENANCE,
             ])></div>
         </div>
 
@@ -28,9 +28,9 @@
                 </h3>
                 <span @class([
                     'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wide',
-                    'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' => !$apartment->is_rented,
-                    'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' => $apartment->is_rented && $apartment->status !== 'maintenance',
-                    'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400' => $apartment->status === 'maintenance',
+                    'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' => $apartment->status === \App\Enums\ApartmentStatus::AVAILABLE,
+                    'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' => $apartment->status === \App\Enums\ApartmentStatus::RENTED,
+                    'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' => $apartment->status === \App\Enums\ApartmentStatus::MAINTENANCE,
                 ])>
                     {{ $apartment->status_text }}
                 </span>
@@ -42,7 +42,7 @@
 
         {{-- Tenant Info (if rented) --}}
         <div class="hidden md:block min-w-[180px]">
-            @if($apartment->is_rented && $apartment->user)
+            @if($apartment->status === \App\Enums\ApartmentStatus::RENTED && $apartment->user)
                 <div class="flex items-center gap-2">
                     <div class="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
                         <span class="text-[10px] font-medium text-gray-600 dark:text-gray-300">

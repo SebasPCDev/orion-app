@@ -1,24 +1,21 @@
-<div class="space-y-6">
-    {{-- Page Header --}}
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Resumen financiero de {{ $currentMonth }} {{ $currentYear }}</p>
-        </div>
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <div class="space-y-6">
+        {{-- Page Header --}}
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+            </div>
         <flux:modal.trigger name="create-payment-modal">
             <flux:button variant="primary" size="sm">
-                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
                 Registrar Pago
             </flux:button>
         </flux:modal.trigger>
     </div>
 
-    {{-- Metrics Cards --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {{-- Ingresos del Ano --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+        {{-- Metrics Cards --}}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {{-- Ingresos del Ano --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
             <div class="flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Ingresos {{ $currentYear }}</p>
@@ -46,8 +43,8 @@
             <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
         </div>
 
-        {{-- Pagos del Mes --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+            {{-- Pagos del Mes --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ $currentMonth }}</p>
@@ -62,8 +59,8 @@
             <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-400 to-blue-500"></div>
         </div>
 
-        {{-- Total Transacciones --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+            {{-- Total Transacciones --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Transacciones</p>
@@ -78,8 +75,8 @@
             <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-400 to-violet-500"></div>
         </div>
 
-        {{-- Propiedades Arrendadas --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+            {{-- Propiedades Arrendadas --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Arrendados</p>
@@ -95,12 +92,12 @@
         </div>
     </div>
 
-    {{-- Payments Section --}}
-    <div class="space-y-4">
-        {{-- Section Header --}}
-        <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Historial de Pagos</h2>
-        </div>
+        {{-- Payments Section --}}
+        <div class="space-y-4">
+            {{-- Section Header --}}
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Historial de Pagos</h2>
+            </div>
 
         {{-- Search & Filters --}}
         <div class="flex flex-col sm:flex-row gap-3">
@@ -233,10 +230,10 @@
             </div>
         @endif
 
-        {{-- Payments Table --}}
-        <div class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
-            {{-- Table Header --}}
-            <div class="hidden sm:grid sm:grid-cols-12 gap-4 px-4 py-3 bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700 text-[10px] font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            {{-- Payments Table --}}
+            <div class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
+                {{-- Table Header --}}
+                <div class="hidden sm:grid sm:grid-cols-12 gap-4 px-6 py-3 bg-gray-50 dark:bg-gray-800/80 border-b border-gray-200 dark:border-gray-700 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 <div class="col-span-3">Propiedad</div>
                 <div class="col-span-2">Inquilino</div>
                 <div class="col-span-2">Monto</div>
@@ -284,8 +281,9 @@
         </div>
     </div>
 
-    {{-- Create Payment Modal --}}
-    <flux:modal name="create-payment-modal" class="md:w-[32rem]">
-        <livewire:create-payment-modal :rentedApartments="$this->rentedApartments" />
-    </flux:modal>
+        {{-- Create Payment Modal --}}
+        <flux:modal name="create-payment-modal" class="md:w-[32rem]">
+            <livewire:create-payment-modal :rentedApartments="$this->rentedApartments" />
+        </flux:modal>
+    </div>
 </div>

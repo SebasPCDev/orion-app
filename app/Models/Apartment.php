@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ApartmentStatus;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +23,6 @@ class Apartment extends Model
         'name',
         'address',
         'price',
-        'is_rented',
         'block',
         'description',
         'bedrooms',
@@ -31,7 +31,7 @@ class Apartment extends Model
         'floor',
         'unit_number',
         'amenities',
-        'images', // Agregar este campo
+        'images',
         'status',
     ];
 
@@ -44,40 +44,11 @@ class Apartment extends Model
     {
         return [
             'price' => 'integer',
-            'is_rented' => 'boolean',
+            'status' => ApartmentStatus::class,
             'area' => 'decimal:2',
             'amenities' => 'array',
             'images' => 'array',
         ];
-    }
-
-    /**
-     * Sincroniza is_rented con status cuando se actualiza is_rented.
-     */
-    public function setIsRentedAttribute($value)
-    {
-        $this->attributes['is_rented'] = $value;
-
-        // Sincronizar status solo si no esta en mantenimiento
-        if (!isset($this->attributes['status']) || $this->attributes['status'] !== 'maintenance') {
-            $this->attributes['status'] = $value ? 'rented' : 'available';
-        }
-    }
-
-    /**
-     * Sincroniza is_rented con status cuando se actualiza status.
-     */
-    public function setStatusAttribute($value)
-    {
-        $this->attributes['status'] = $value;
-
-        // Sincronizar is_rented basado en status
-        if ($value === 'rented') {
-            $this->attributes['is_rented'] = true;
-        } elseif ($value === 'available') {
-            $this->attributes['is_rented'] = false;
-        }
-        // Si es 'maintenance', no cambiamos is_rented
     }
 
     /**
@@ -93,7 +64,7 @@ class Apartment extends Model
      */
     public function scopeAvailable($query)
     {
-        return $query->where('status', 'available');
+        return $query->where('status', ApartmentStatus::AVAILABLE);
     }
 
     /**
@@ -101,7 +72,7 @@ class Apartment extends Model
      */
     public function scopeRented($query)
     {
-        return $query->where('is_rented', true);
+        return $query->where('status', ApartmentStatus::RENTED);
     }
 
     /**
@@ -125,9 +96,7 @@ class Apartment extends Model
      */
     public function getStatusBadgeClassAttribute(): string
     {
-        return $this->is_rented 
-            ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-            : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+        return $this->status->badgeClass();
     }
 
     /**
@@ -135,11 +104,7 @@ class Apartment extends Model
      */
     public function getStatusTextAttribute(): string
     {
-        return match ($this->status) {
-            'rented' => 'Arrendado',
-            'maintenance' => 'En Mantenimiento',
-            default => 'Disponible',
-        };
+        return $this->status->label();
     }
 
     /**

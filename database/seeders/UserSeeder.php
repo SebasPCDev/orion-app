@@ -23,27 +23,27 @@ class UserSeeder extends Seeder
         ]);
 
         // Tenant Users
-        $tenants = [
-            ['name' => 'Juan Rodriguez'],
-            ['name' => 'Maria Garcia'],
-            ['name' => 'Carlos Perez'],
-            ['name' => 'Ana Martinez'],
-            ['name' => 'Luis Hernandez'],
-            ['name' => 'Sofia Gomez'],
-            ['name' => 'Andres Diaz'],
-            ['name' => 'Laura Sanchez'],
-            ['name' => 'Diego Gonzalez'],
-            ['name' => 'Valentina Torres'],
-        ];
+        // $tenants = [
+        //     ['name' => 'Juan Rodriguez'],
+        //     ['name' => 'Maria Garcia'],
+        //     ['name' => 'Carlos Perez'],
+        //     ['name' => 'Ana Martinez'],
+        //     ['name' => 'Luis Hernandez'],
+        //     ['name' => 'Sofia Gomez'],
+        //     ['name' => 'Andres Diaz'],
+        //     ['name' => 'Laura Sanchez'],
+        //     ['name' => 'Diego Gonzalez'],
+        //     ['name' => 'Valentina Torres'],
+        // ];
 
-        foreach ($tenants as $index => $tenant) {
+        // foreach ($tenants as $index => $tenant) {
 
-            User::factory()->create([
-                'name' => $tenant['name'],
-                'email' => strtolower(str_replace(' ', '.', $tenant['name'])) . '@orion.com',
-                'password' => Hash::make('password'),
-                'role' => 'tenant',
-            ]);
-        }
+        //     User::factory()->create([
+        //         'name' => $tenant['name'],
+        //         'email' => strtolower(str_replace(' ', '.', $tenant['name'])) . '@orion.com',
+        //         'password' => Hash::make('password'),
+        //         'role' => 'tenant',
+        //     ]);
+        // }
     }
 }

@@ -1,19 +1,20 @@
-<div class="space-y-6">
-    {{-- Page Header --}}
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Propiedades</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gestiona tu portafolio de inmuebles</p>
-        </div>
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <div class="space-y-6">
+        {{-- Page Header --}}
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Propiedades</h1>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gestiona tu portafolio de inmuebles</p>
+            </div>
         <!-- <flux:button variant="primary" size="sm">
             Nueva Propiedad
         </flux:button> -->
     </div>
 
-    {{-- Stats Overview --}}
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        {{-- Total --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+        {{-- Stats Overview --}}
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            {{-- Total --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</p>
@@ -28,54 +29,54 @@
             <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-500"></div>
         </div>
 
-        {{-- Disponibles --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Disponibles</p>
-                    <p class="mt-1 text-2xl font-bold text-emerald-600 dark:text-emerald-400">{{ $stats['available'] }}</p>
+            {{-- Disponibles --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Disponibles</p>
+                        <p class="mt-1 text-2xl font-bold text-emerald-600 dark:text-emerald-400">{{ $stats['available'] }}</p>
+                    </div>
+                    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
+                        <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/30">
-                    <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </div>
+                <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
             </div>
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
-        </div>
 
-        {{-- Arrendados --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Arrendados</p>
-                    <p class="mt-1 text-2xl font-bold text-amber-600 dark:text-amber-400">{{ $stats['rented'] }}</p>
+            {{-- Arrendados --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Arrendados</p>
+                        <p class="mt-1 text-2xl font-bold text-amber-600 dark:text-amber-400">{{ $stats['rented'] }}</p>
+                    </div>
+                    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/30">
+                        <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        </svg>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-900/30">
-                    <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                    </svg>
-                </div>
+                <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-amber-500"></div>
             </div>
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-amber-500"></div>
-        </div>
 
-        {{-- Mantenimiento --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Mantenimiento</p>
-                    <p class="mt-1 text-2xl font-bold text-gray-600 dark:text-gray-400">{{ $stats['maintenance'] }}</p>
+            {{-- Mantenimiento --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Mantenimiento</p>
+                        <p class="mt-1 text-2xl font-bold text-gray-600 dark:text-gray-400">{{ $stats['maintenance'] }}</p>
+                    </div>
+                    <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 dark:bg-gray-900/30">
+                    <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16 8L13 11L10 10L6 6L5 3L8 0L11 1L15 5L16 8Z" fill="#000000"></path> <path d="M0 13L5.08579 7.91418L8.08579 10.9142L3 16L0 13Z" fill="#000000"></path> </g></svg>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-50 dark:bg-gray-900/30">
-                <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16 8L13 11L10 10L6 6L5 3L8 0L11 1L15 5L16 8Z" fill="#000000"></path> <path d="M0 13L5.08579 7.91418L8.08579 10.9142L3 16L0 13Z" fill="#000000"></path> </g></svg>
-                </div>
+                <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 to-gray-500"></div>
             </div>
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 to-gray-500"></div>
-        </div>
 
-        {{-- Ingreso Mensual --}}
-        <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4">
+            {{-- Ingreso Mensual --}}
+            <div class="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Ingreso/Mes</p>
@@ -263,17 +264,17 @@
                                 <p class="text-xs text-gray-500 dark:text-gray-400">
                                     {{ $apartments->count() }} {{ $apartments->count() === 1 ? 'propiedad' : 'propiedades' }}
                                     <span class="mx-1 opacity-30">|</span>
-                                    {{ $apartments->where('is_rented', true)->count() }} arrendados
+                                    {{ $apartments->where('status', \App\Enums\ApartmentStatus::RENTED)->count() }} arrendados
                                     <span class="mx-1 opacity-30">|</span>
-                                    {{ $apartments->where('status', 'maintenance')->count() }} mantenimiento
+                                    {{ $apartments->where('status', \App\Enums\ApartmentStatus::MAINTENANCE)->count() }} mantenimiento
                                     <span class="mx-1 opacity-30">|</span>
-                                    {{ $apartments->where('status', 'available')->count() }} disponibles
+                                    {{ $apartments->where('status', \App\Enums\ApartmentStatus::AVAILABLE)->count() }} disponibles
                                 </p>
                             </div>
                         </div>
                         <div class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600">
                             <span class="text-xs text-gray-500 dark:text-gray-400">Ingreso:</span>
-                            <span class="text-sm font-bold text-gray-900 dark:text-white">${{ number_format($apartments->where('is_rented', true)->sum('price'), 0, ',', '.') }}</span>
+                            <span class="text-sm font-bold text-gray-900 dark:text-white">${{ number_format($apartments->where('status', \App\Enums\ApartmentStatus::RENTED)->sum('price'), 0, ',', '.') }}</span>
                         </div>
                     </div>
 
@@ -314,7 +315,8 @@
                         Limpiar filtros
                     </button>
                 @endif
+                </div>
             </div>
-        </div>
-    @endif
+        @endif
+    </div>
 </div>

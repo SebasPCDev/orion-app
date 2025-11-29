@@ -15,8 +15,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            ApartmentSeeder::class,
-            PaymentSeeder::class,
+            // ApartmentSeeder::class,
+            // PaymentSeeder::class,
         ]);
+
+        $this->call(ApartmentSeeder::class, false, ['runEmptyOnly']);
     }
 }

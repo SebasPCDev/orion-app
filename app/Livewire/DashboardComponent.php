@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\ApartmentStatus;
 use App\Models\Apartment;
 use App\Models\Payment;
 use App\Models\User;
@@ -43,7 +44,7 @@ class DashboardComponent extends Component
     public function metrics(): array
     {
         $totalRevenue = Payment::whereYear('payment_date', $this->currentYear)->sum('amount');
-        $rentedApartments = Apartment::where('is_rented', true)->get();
+        $rentedApartments = Apartment::where('status', ApartmentStatus::RENTED)->get();
         $annualGoal = $rentedApartments->sum('price') * 12;
         $totalPayments = Payment::whereYear('payment_date', $this->currentYear)->count();
         $currentMonthPayments = Payment::whereYear('payment_date', $this->currentYear)
@@ -98,7 +99,7 @@ class DashboardComponent extends Component
     #[Computed]
     public function rentedApartments()
     {
-        return Apartment::where('is_rented', true)->orderBy('name')->get();
+        return Apartment::where('status', ApartmentStatus::RENTED)->orderBy('name')->get();
     }
 
     public function getMonthsProperty(): array
