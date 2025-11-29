@@ -55,7 +55,7 @@
                     </div>
                     <div>
                         <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Precio Mensual</p>
-                        <p class="text-lg font-bold text-zinc-900">${{ number_format($price, 0, ',', '.') }}</p>
+                        <p class="text-lg font-bold text-zinc-900">${{ number_format((int) str_replace(['.', ','], '', $price), 0, ',', '.') }}</p>
                     </div>
                 </div>
             </div>
@@ -185,6 +185,75 @@
                             <div class="flex-1 min-w-0">
                                 <p class="font-medium text-zinc-900 truncate">{{ $apartment->user->name }}</p>
                                 <p class="text-sm text-zinc-500 truncate">{{ $apartment->user->email }}</p>
+                                @if($apartment->user->phone)
+                                    <p class="text-sm text-zinc-500 truncate">{{ $apartment->user->phone }}</p>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Botón Desocupar --}}
+                        <div x-data="{ showConfirm: false }" class="mt-4">
+                            <button
+                                type="button"
+                                @click="showConfirm = true"
+                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                                Desocupar Apartamento
+                            </button>
+
+                            {{-- Modal de confirmación --}}
+                            <div x-show="showConfirm"
+                                 x-cloak
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100"
+                                 x-transition:leave-end="opacity-0"
+                                 class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                                 @keydown.escape.window="showConfirm = false">
+                                <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6" @click.stop>
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-red-100">
+                                            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-lg font-semibold text-zinc-900">Confirmar desocupación</h3>
+                                    </div>
+
+                                    <p class="text-sm text-zinc-600 mb-4">
+                                        Esta acción desvinculará al inquilino <strong>{{ $apartment->user->name }}</strong> de este apartamento y cambiará su estado a inactivo.
+                                    </p>
+
+                                    @if($this->hasPendingPayments())
+                                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg mb-4">
+                                            <div class="flex items-center gap-2 text-amber-800">
+                                                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                                </svg>
+                                                <span class="text-sm font-medium">Este apartamento tiene pagos pendientes</span>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <div class="flex justify-end gap-3">
+                                        <flux:button type="button" variant="ghost" @click="showConfirm = false">
+                                            Cancelar
+                                        </flux:button>
+                                        <flux:button
+                                            type="button"
+                                            variant="danger"
+                                            wire:click="vacateApartment"
+                                            @click="showConfirm = false"
+                                        >
+                                            Confirmar Desocupación
+                                        </flux:button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @else
@@ -199,15 +268,19 @@
                     @endif
 
                     <div class="space-y-3">
-                        <flux:select wire:model="tenant_id" label="Seleccionar inquilino">
-                            <option value="">-- Sin asignar --</option>
-                            @foreach($tenants as $tenant)
-                                <option value="{{ $tenant->id }}">{{ $tenant->name }}</option>
-                            @endforeach
-                        </flux:select>
-                        <flux:button wire:click="assignTenant" variant="primary" class="w-full">
-                            Actualizar Inquilino
-                        </flux:button>
+                        @if($apartment->status === 'available')
+                            <flux:select wire:model="tenant_id" label="Seleccionar inquilino">
+                                <option value="">-- Sin asignar --</option>
+                                @foreach($tenants as $tenant)
+                                    <option value="{{ $tenant->id }}">{{ $tenant->name }}</option>
+                                @endforeach
+                            </flux:select>
+                            <flux:button wire:click="assignTenant" variant="primary" class="w-full">
+                                Actualizar Inquilino
+                            </flux:button>
+                        @elseif($apartment->status === 'maintenance')
+                            <p class="text-sm text-zinc-500">El apartamento está en mantenimiento y no se puede asignar un inquilino</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -263,9 +336,6 @@
                                 variant="primary"
                                 @click="setTimeout(() => { editMode = false; }, 100)"
                             >
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                </svg>
                                 Guardar Cambios
                             </flux:button>
                         </div>

@@ -5,12 +5,9 @@
             <h1 class="text-xl font-semibold text-gray-900 dark:text-white">Propiedades</h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Gestiona tu portafolio de inmuebles</p>
         </div>
-        <flux:button variant="primary" size="sm">
-            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
+        <!-- <flux:button variant="primary" size="sm">
             Nueva Propiedad
-        </flux:button>
+        </flux:button> -->
     </div>
 
     {{-- Stats Overview --}}

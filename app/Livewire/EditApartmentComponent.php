@@ -102,38 +102,49 @@ class EditApartmentComponent extends Component
             'El apartamento ha sido actualizado.'
         );
     }
-    
-    public function addPayment()
-    {
-        $this->validate([
-            'amount' => 'required|numeric|min:0',
-            'payment_date' => 'required|date',
-            'payment_month' => 'required|string',
-            'payment_description' => 'nullable|string',
-        ]);
-
-        $this->apartment->payments()->create([
-            'user_id' => $this->apartment->user_id,
-            'amount' => $this->amount,
-            'payment_date' => $this->payment_date,
-            'month' => $this->payment_month,
-            'description' => $this->payment_description,
-            'status' => 'pagado',
-        ]);
-
-        $this->reset(['amount', 'payment_date', 'payment_month', 'payment_description']);
-        $this->dispatch('payment-added');
-    }
-
-    public function markAsCompleted(Payment $payment)
-    {
-        $payment->update(['status' => 'completed']);
-    }
 
     public function assignTenant()
     {
         $this->apartment->update(['user_id' => $this->tenant_id]);
         $this->dispatch('tenant-assigned');
+    }
+
+    public function vacateApartment(): void
+    {
+        $tenant = $this->apartment->user;
+
+        if (!$tenant) {
+            $this->toastError('Error', 'No hay inquilino asignado a este apartamento.');
+            return;
+        }
+
+        // Update tenant status to inactive
+        $tenant->update(['status' => 'inactive']);
+
+        // Update apartment: remove tenant and set as available
+        $this->apartment->update([
+            'user_id' => null,
+            'status' => 'available',
+            'is_rented' => false,
+        ]);
+
+        // Refresh local state
+        $this->tenant_id = null;
+        $this->status = 'available';
+        $this->is_rented = false;
+
+        $this->dispatch('apartment-vacated');
+        $this->toastSuccess(
+            'Apartamento desocupado',
+            "El inquilino {$tenant->name} ha sido desvinculado y el apartamento está disponible."
+        );
+    }
+
+    public function hasPendingPayments(): bool
+    {
+        return $this->apartment->payments()
+            ->where('status', 'pending')
+            ->exists();
     }
 
     public function render(): View

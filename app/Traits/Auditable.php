@@ -86,7 +86,7 @@ trait Auditable
             unset($attributes['created_at'], $attributes['updated_at']);
         }
 
-        return $attributes;
+        return $this->normalizeAttributesForAudit($attributes);
     }
 
     /**
@@ -104,7 +104,31 @@ trait Auditable
             unset($original['created_at'], $original['updated_at']);
         }
 
-        return $original;
+        return $this->normalizeAttributesForAudit($original);
+    }
+
+    /**
+     * Normalize attributes by applying casts for consistent audit logging.
+     */
+    protected function normalizeAttributesForAudit(array $attributes): array
+    {
+        $casts = $this->getCasts();
+
+        foreach ($attributes as $key => $value) {
+            if (isset($casts[$key]) && $value !== null) {
+                $castType = $casts[$key];
+
+                // Handle array/json casts
+                if (in_array($castType, ['array', 'json', 'collection'])) {
+                    if (is_string($value)) {
+                        $decoded = json_decode($value, true);
+                        $attributes[$key] = $decoded ?? $value;
+                    }
+                }
+            }
+        }
+
+        return $attributes;
     }
 
     /**

@@ -93,7 +93,7 @@ class Apartment extends Model
      */
     public function scopeAvailable($query)
     {
-        return $query->where('is_rented', false);
+        return $query->where('status', 'available');
     }
 
     /**

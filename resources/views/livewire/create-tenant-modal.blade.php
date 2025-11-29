@@ -30,14 +30,13 @@
                     {{-- Body --}}
                     <form wire:submit="save" class="p-6 space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="md:col-span-2">
                                 <flux:input
                                     wire:model="name"
                                     label="Nombre completo"
                                     placeholder="Nombre del inquilino"
                                     required
                                 />
-                            </div>
+                            
 
                             <flux:input
                                 wire:model="identification_number"
@@ -67,33 +66,39 @@
                                 placeholder="Opcional"
                             />
 
-                            <div class="md:col-span-2">
-                                <flux:input
-                                    wire:model="cutoff_day"
-                                    type="number"
-                                    min="1"
-                                    max="31"
-                                    label="Día de corte (fecha de pago mensual)"
-                                    placeholder="Ej: 15"
-                                    required
-                                />
-                                <p class="mt-1 text-xs text-zinc-500">
-                                    El día del mes en que el inquilino debe realizar su pago. Se usará para calcular el estado de pago.
-                                </p>
-                            </div>
-                        </div>
+                            <flux:input
+                                wire:model="cutoff_day"
+                                type="number"
+                                min="1"
+                                max="31"
+                                label="Día de corte (fecha de pago mensual)"
+                                placeholder="Ej: 15"
+                                required
+                            />
 
-                        <div class="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                            <div class="flex gap-3">
-                                <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                <div>
-                                    <p class="text-sm font-medium text-amber-800">Nota importante</p>
-                                    <p class="text-sm text-amber-700">
-                                        Se generará una contraseña temporal automáticamente. Asegúrate de comunicarla al inquilino.
+                            <div class="md:col-span-2">
+                                <flux:select
+                                    wire:model="apartment_id"
+                                    label="Apartamento a asignar"
+                                    placeholder="Seleccione un apartamento"
+                                    required
+                                >
+                                    <flux:select.option value="">Seleccione un apartamento</flux:select.option>
+                                    @foreach($this->availableApartments as $apartment)
+                                        <flux:select.option value="{{ $apartment->id }}">
+                                            {{ $apartment->block ? "Bloque {$apartment->block} - " : '' }}{{ $apartment->name }} 
+                                        </flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                @if($this->availableApartments->isEmpty())
+                                    <p class="mt-1 text-xs text-amber-600">
+                                        No hay apartamentos disponibles para asignar.
                                     </p>
-                                </div>
+                                @else
+                                    <p class="mt-1 text-xs text-zinc-500">
+                                        Solo se muestran apartamentos disponibles para arrendar.
+                                    </p>
+                                @endif
                             </div>
                         </div>
 
@@ -103,9 +108,6 @@
                                 Cancelar
                             </flux:button>
                             <flux:button type="submit" variant="primary">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                </svg>
                                 Registrar Inquilino
                             </flux:button>
                         </div>
