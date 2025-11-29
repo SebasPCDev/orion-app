@@ -84,11 +84,30 @@ class Apartment extends Model
     }
 
     /**
-     * Get the formatted price.
+     * Get the formatted price (reference price).
      */
     public function getFormattedPriceAttribute(): string
     {
         return '$' . number_format($this->price, 0, ',', '.');
+    }
+
+    /**
+     * Get the current price (from active lease if rented, otherwise reference price).
+     */
+    public function getCurrentPriceAttribute(): int
+    {
+        if ($this->status === ApartmentStatus::RENTED && $this->relationLoaded('activeLease') && $this->activeLease) {
+            return $this->activeLease->monthly_rent;
+        }
+        return $this->price;
+    }
+
+    /**
+     * Get the formatted current price.
+     */
+    public function getFormattedCurrentPriceAttribute(): string
+    {
+        return '$' . number_format($this->current_price, 0, ',', '.');
     }
 
     /**
@@ -113,5 +132,21 @@ class Apartment extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /**
+     * Get the leases for the apartment.
+     */
+    public function leases(): HasMany
+    {
+        return $this->hasMany(Lease::class);
+    }
+
+    /**
+     * Get the active lease for the apartment.
+     */
+    public function activeLease()
+    {
+        return $this->hasOne(Lease::class)->where('status', \App\Enums\LeaseStatus::ACTIVE);
     }
 }

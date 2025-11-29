@@ -14,6 +14,7 @@ class Payment extends Model
     protected $fillable = [
         'apartment_id',
         'user_id',
+        'lease_id',
         'amount',
         'payment_date',
         'month',
@@ -35,5 +36,13 @@ class Payment extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the lease that owns the payment.
+     */
+    public function lease(): BelongsTo
+    {
+        return $this->belongsTo(Lease::class);
     }
 }

@@ -17,7 +17,7 @@
                             </div>
                             <div>
                                 <h3 class="text-lg font-semibold text-zinc-900">Nuevo Inquilino</h3>
-                                <p class="text-sm text-zinc-500">Registrar un nuevo inquilino en el sistema</p>
+                                <p class="text-sm text-zinc-500">Registrar un nuevo inquilino. Para asignarlo a un apartamento, crea un contrato.</p>
                             </div>
                         </div>
                         <button wire:click="close" class="p-2 text-zinc-400 hover:text-zinc-600 transition-colors">
@@ -65,41 +65,6 @@
                                 label="Teléfono alternativo"
                                 placeholder="Opcional"
                             />
-
-                            <flux:input
-                                wire:model="cutoff_day"
-                                type="number"
-                                min="1"
-                                max="31"
-                                label="Día de corte (fecha de pago mensual)"
-                                placeholder="Ej: 15"
-                                required
-                            />
-
-                            <div class="md:col-span-2">
-                                <flux:select
-                                    wire:model="apartment_id"
-                                    label="Apartamento a asignar"
-                                    placeholder="Seleccione un apartamento"
-                                    required
-                                >
-                                    <flux:select.option value="">Seleccione un apartamento</flux:select.option>
-                                    @foreach($this->availableApartments as $apartment)
-                                        <flux:select.option value="{{ $apartment->id }}">
-                                            {{ $apartment->block ? "Bloque {$apartment->block} - " : '' }}{{ $apartment->name }} 
-                                        </flux:select.option>
-                                    @endforeach
-                                </flux:select>
-                                @if($this->availableApartments->isEmpty())
-                                    <p class="mt-1 text-xs text-amber-600">
-                                        No hay apartamentos disponibles para asignar.
-                                    </p>
-                                @else
-                                    <p class="mt-1 text-xs text-zinc-500">
-                                        Solo se muestran apartamentos disponibles para arrendar.
-                                    </p>
-                                @endif
-                            </div>
                         </div>
 
                         {{-- Footer --}}

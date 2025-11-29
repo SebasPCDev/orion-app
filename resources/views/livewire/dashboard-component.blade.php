@@ -108,12 +108,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
-                <input
-                    type="text"
-                    wire:model.live.debounce.300ms="search"
-                    placeholder="Buscar por propiedad, inquilino..."
-                    class="block w-full pl-9 pr-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
-                >
+                <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar por propiedad, inquilino..." icon="magnifying-glass"/> 
             </div>
 
             {{-- Filter Buttons --}}

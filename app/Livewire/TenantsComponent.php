@@ -26,7 +26,7 @@ class TenantsComponent extends Component
     {
         $tenants = User::query()
             ->where('role', 'tenant')
-            ->with('apartment')
+            ->with(['apartment.activeLease', 'activeLease'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
@@ -51,7 +51,7 @@ class TenantsComponent extends Component
     #[Computed]
     public function stats(): array
     {
-        $tenants = User::where('role', 'tenant')->with('apartment')->get();
+        $tenants = User::where('role', 'tenant')->with(['apartment.activeLease', 'activeLease'])->get();
 
         return [
             'total' => $tenants->count(),

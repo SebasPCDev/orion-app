@@ -54,7 +54,7 @@
                         </svg>
                     </div>
                     <div>
-                        <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Precio Mensual</p>
+                        <p class="text-xs font-medium text-zinc-500 uppercase tracking-wider">Precio de Referencia</p>
                         <p class="text-lg font-bold text-zinc-900">${{ number_format((int) str_replace(['.', ','], '', $price), 0, ',', '.') }}</p>
                     </div>
                 </div>
@@ -302,7 +302,10 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <flux:input icon="currency-dollar" label="Precio" x-mask:dynamic="$money($input)" wire:model.defer="price" required x-bind:disabled="!editMode"/>
+                            <div>
+                                <flux:input icon="currency-dollar" label="Precio de Referencia" x-mask:dynamic="$money($input)" wire:model.defer="price" required x-bind:disabled="!editMode"/>
+                                <p class="mt-1 text-xs text-zinc-500">Este es el precio sugerido. El precio real se define en el contrato.</p>
+                            </div>
                             <flux:input wire:model.defer="block" label="Bloque" type="text" x-bind:disabled="!editMode"/>
                             <flux:select wire:model.defer="status" label="Estado" x-bind:disabled="!editMode">
                                 @foreach($statusOptions as $key => $label)

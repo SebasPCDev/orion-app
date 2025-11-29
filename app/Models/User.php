@@ -102,17 +102,49 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the leases for the user.
+     */
+    public function leases(): HasMany
+    {
+        return $this->hasMany(Lease::class);
+    }
+
+    /**
+     * Get the active lease for the user.
+     */
+    public function activeLease()
+    {
+        return $this->hasOne(Lease::class)->where('status', \App\Enums\LeaseStatus::ACTIVE);
+    }
+
+    /**
+     * Get the cutoff day from active lease or fallback to user's cutoff_day.
+     */
+    public function getCutoffDayAttribute($value): ?int
+    {
+        // Try to get from active lease first
+        if ($this->relationLoaded('activeLease') && $this->activeLease) {
+            return $this->activeLease->cutoff_day;
+        }
+
+        // Fallback to user's own cutoff_day for backward compatibility
+        return $value;
+    }
+
+    /**
      * Get the current cutoff date for this tenant.
      * Returns the most recent cutoff date (could be this month or last month).
      */
     public function getCurrentCutoffDate(): ?Carbon
     {
-        if (!$this->cutoff_day) {
+        $cutoffDay = $this->cutoff_day;
+
+        if (!$cutoffDay) {
             return null;
         }
 
         $today = Carbon::today();
-        $cutoffDay = min($this->cutoff_day, $today->daysInMonth);
+        $cutoffDay = min($cutoffDay, $today->daysInMonth);
 
         // Create cutoff date for current month
         $cutoffDate = $today->copy()->day($cutoffDay)->startOfDay();
@@ -132,12 +164,14 @@ class User extends Authenticatable
      */
     public function getNextCutoffDate(): ?Carbon
     {
-        if (!$this->cutoff_day) {
+        $cutoffDay = $this->cutoff_day;
+
+        if (!$cutoffDay) {
             return null;
         }
 
         $today = Carbon::today();
-        $cutoffDay = min($this->cutoff_day, $today->daysInMonth);
+        $cutoffDay = min($cutoffDay, $today->daysInMonth);
 
         // Create cutoff date for current month
         $cutoffDate = $today->copy()->day($cutoffDay)->startOfDay();
@@ -164,17 +198,17 @@ class User extends Authenticatable
             return false;
         }
 
-        // Get the apartment's price
-        $apartment = $this->apartment;
-        if (!$apartment) {
+        // Get the active lease
+        $activeLease = $this->relationLoaded('activeLease') ? $this->activeLease : $this->activeLease()->first();
+        if (!$activeLease) {
             return false;
         }
 
         // Check if there's a payment in the current period that covers the rent
         return $this->payments()
-            ->where('apartment_id', $apartment->id)
+            ->where('apartment_id', $activeLease->apartment_id)
             ->whereBetween('payment_date', [$currentCutoff, $nextCutoff->subDay()])
-            ->where('amount', '>=', $apartment->price)
+            ->where('amount', '>=', $activeLease->monthly_rent)
             ->exists();
     }
 
@@ -198,8 +232,10 @@ class User extends Authenticatable
      */
     public function getPaymentStatusCalculatedAttribute(): ?string
     {
+        $cutoffDay = $this->cutoff_day;
+
         // Only applies to tenants with cutoff day and an apartment
-        if ($this->role !== 'tenant' || !$this->cutoff_day || !$this->apartment) {
+        if ($this->role !== 'tenant' || !$cutoffDay || !$this->apartment) {
             return null;
         }
 

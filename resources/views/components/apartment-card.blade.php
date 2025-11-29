@@ -61,9 +61,15 @@
         {{-- Price --}}
         <div class="flex-shrink-0 text-right min-w-[180px]">
             <div class="text-sm font-bold text-gray-900 dark:text-white">
-                {{ $apartment->formatted_price }}
+                {{ $apartment->formatted_current_price }}
             </div>
-            <div class="text-[10px] text-gray-500 dark:text-gray-400">/mes</div>
+            <div class="text-[10px] text-gray-500 dark:text-gray-400">
+                @if($apartment->status === \App\Enums\ApartmentStatus::RENTED && $apartment->activeLease)
+                    /mes (contrato)
+                @else
+                    /mes (ref.)
+                @endif
+            </div>
         </div>
 
         {{-- Arrow indicator --}}

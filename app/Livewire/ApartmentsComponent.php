@@ -37,6 +37,7 @@ class ApartmentsComponent extends Component
     public function apartments(): Collection
     {
         return Apartment::query()
+            ->with(['user', 'activeLease'])
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
@@ -79,14 +80,19 @@ class ApartmentsComponent extends Component
     public function stats(): array
     {
         // Optimización: usar una sola query para obtener todas las estadísticas
-        $allApartments = Apartment::select('status', 'price')->get();
-        
+        $allApartments = Apartment::with('activeLease')->get();
+
+        // Calculate monthly income from active leases, not reference prices
+        $monthlyIncome = $allApartments
+            ->filter(fn($apt) => $apt->status === ApartmentStatus::RENTED && $apt->activeLease)
+            ->sum(fn($apt) => $apt->activeLease->monthly_rent);
+
         return [
             'total' => $allApartments->count(),
-            'available' => $allApartments->where('status', 'available')->count(),
-            'rented' => $allApartments->where('status', 'rented')->count(),
-            'maintenance' => $allApartments->where('status', 'maintenance')->count(),
-            'monthly_income' => $allApartments->sum('price'),
+            'available' => $allApartments->where('status', ApartmentStatus::AVAILABLE)->count(),
+            'rented' => $allApartments->where('status', ApartmentStatus::RENTED)->count(),
+            'maintenance' => $allApartments->where('status', ApartmentStatus::MAINTENANCE)->count(),
+            'monthly_income' => $monthlyIncome,
         ];
     }
 

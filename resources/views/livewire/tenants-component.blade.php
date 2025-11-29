@@ -89,86 +89,82 @@
         </div>
 
         {{-- Filters --}}
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-            <div class="p-4">
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <div class="flex-1">
-                        <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar por nombre, cedula, telefono..." icon="magnifying-glass"/>
-                    </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1">
+                <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar por nombre, cedula, telefono..." icon="magnifying-glass"/>
+            </div>
 
-                    <div class="flex items-center gap-3">
-                        {{-- Payment Status Filter --}}
-                        <div class="relative" x-data="{ open: false }">
-                            <button
-                                @click="open = !open"
-                                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border transition-colors
-                                    {{ $paymentStatusFilter
-                                        ? 'bg-blue-50 border-blue-200 text-blue-700'
-                                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50' }}"
-                            >
-                                @if($paymentStatusFilter === 'al_dia')
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                @elseif($paymentStatusFilter === 'pendiente')
-                                    <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                                @elseif($paymentStatusFilter === 'moroso')
-                                    <span class="w-2 h-2 rounded-full bg-red-500"></span>
-                                @else
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                                    </svg>
-                                @endif
-                                <span>{{ $this->paymentStatuses[$paymentStatusFilter] ?? 'Estado Pago' }}</span>
-                                <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
-                            </button>
-
-                            <div
-                                x-show="open"
-                                @click.away="open = false"
-                                x-transition
-                                x-cloak
-                                class="absolute right-0 mt-2 w-44 rounded-lg bg-white shadow-lg border border-gray-200 py-1 z-50"
-                            >
-                                <button
-                                    wire:click="$set('paymentStatusFilter', '')"
-                                    @click="open = false"
-                                    class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 {{ !$paymentStatusFilter ? 'bg-gray-100' : '' }}"
-                                >
-                                    Todos
-                                </button>
-                                @foreach($this->paymentStatuses as $value => $label)
-                                    <button
-                                        wire:click="$set('paymentStatusFilter', '{{ $value }}')"
-                                        @click="open = false"
-                                        class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 {{ $paymentStatusFilter === $value ? 'bg-gray-100' : '' }}"
-                                    >
-                                        <span @class([
-                                            'w-2 h-2 rounded-full',
-                                            'bg-emerald-500' => $value === 'al_dia',
-                                            'bg-amber-500' => $value === 'pendiente',
-                                            'bg-red-500' => $value === 'moroso',
-                                        ])></span>
-                                        {{ $label }}
-                                    </button>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        {{-- Clear Filters --}}
-                        @if($search || $paymentStatusFilter)
-                            <button
-                                wire:click="clearFilters"
-                                class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                                </svg>
-                                Limpiar
-                            </button>
+            <div class="flex items-center gap-3">
+                {{-- Payment Status Filter --}}
+                <div class="relative" x-data="{ open: false }">
+                    <button
+                        @click="open = !open"
+                        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border transition-colors
+                            {{ $paymentStatusFilter
+                                ? 'bg-blue-50 border-blue-200 text-blue-700'
+                                : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50' }}"
+                    >
+                        @if($paymentStatusFilter === 'al_dia')
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        @elseif($paymentStatusFilter === 'pendiente')
+                            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        @elseif($paymentStatusFilter === 'moroso')
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                        @else
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                            </svg>
                         @endif
+                        <span>{{ $this->paymentStatuses[$paymentStatusFilter] ?? 'Estado Pago' }}</span>
+                        <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+
+                    <div
+                        x-show="open"
+                        @click.away="open = false"
+                        x-transition
+                        x-cloak
+                        class="absolute right-0 mt-2 w-44 rounded-lg bg-white shadow-lg border border-gray-200 py-1 z-50"
+                    >
+                        <button
+                            wire:click="$set('paymentStatusFilter', '')"
+                            @click="open = false"
+                            class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 {{ !$paymentStatusFilter ? 'bg-gray-100' : '' }}"
+                        >
+                            Todos
+                        </button>
+                        @foreach($this->paymentStatuses as $value => $label)
+                            <button
+                                wire:click="$set('paymentStatusFilter', '{{ $value }}')"
+                                @click="open = false"
+                                class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 {{ $paymentStatusFilter === $value ? 'bg-gray-100' : '' }}"
+                            >
+                                <span @class([
+                                    'w-2 h-2 rounded-full',
+                                    'bg-emerald-500' => $value === 'al_dia',
+                                    'bg-amber-500' => $value === 'pendiente',
+                                    'bg-red-500' => $value === 'moroso',
+                                ])></span>
+                                {{ $label }}
+                            </button>
+                        @endforeach
                     </div>
                 </div>
+
+                {{-- Clear Filters --}}
+                @if($search || $paymentStatusFilter)
+                    <button
+                        wire:click="clearFilters"
+                        class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        Limpiar
+                    </button>
+                @endif
             </div>
         </div>
 
@@ -226,7 +222,7 @@
                             <div class="col-span-2">
                                 @if($tenant->apartment)
                                     <p class="text-sm text-gray-900">{{ $tenant->apartment->name }}</p>
-                                    <p class="text-xs text-gray-500">{{ $tenant->apartment->formatted_price }}/mes</p>
+                                    <p class="text-xs text-gray-500">{{ $tenant->apartment->formatted_current_price }}/mes</p>
                                 @else
                                     <span class="text-sm text-gray-400">Sin asignar</span>
                                 @endif
@@ -234,13 +230,14 @@
 
                             {{-- Cutoff Date --}}
                             <div class="col-span-2">
-                                @if($tenant->cutoff_day)
-                                    <p class="text-sm text-gray-900">Dia {{ $tenant->cutoff_day }}</p>
+                                @if($tenant->activeLease)
+                                    <p class="text-sm text-gray-900 dark:text-white">Dia {{ $tenant->cutoff_day }}</p>
                                     @if($tenant->getNextCutoffDate())
-                                        <p class="text-xs text-gray-500">Proximo: {{ $tenant->getNextCutoffDate()->format('d M') }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Proximo: {{ $tenant->getNextCutoffDate()->format('d M') }}</p>
                                     @endif
                                 @else
-                                    <span class="text-sm text-gray-400">No definido</span>
+                                    <span class="text-sm text-amber-600 dark:text-amber-400">Sin contrato</span>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Crea un contrato</p>
                                 @endif
                             </div>
 
@@ -249,15 +246,15 @@
                                 @if($tenant->payment_status_calculated)
                                     <span @class([
                                         'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium',
-                                        'bg-emerald-100 text-emerald-700' => $tenant->payment_status_calculated === 'al_dia',
-                                        'bg-amber-100 text-amber-700' => $tenant->payment_status_calculated === 'pendiente',
-                                        'bg-red-100 text-red-700' => $tenant->payment_status_calculated === 'moroso',
+                                        'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' => $tenant->payment_status_calculated === 'al_dia',
+                                        'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' => $tenant->payment_status_calculated === 'pendiente',
+                                        'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' => $tenant->payment_status_calculated === 'moroso',
                                     ])>
                                         {{ $tenant->payment_status_label }}
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                                        N/A
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                        Sin contrato
                                     </span>
                                 @endif
                             </div>

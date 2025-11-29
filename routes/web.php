@@ -3,6 +3,7 @@
 use App\Livewire\ApartmentsComponent;
 use App\Livewire\AuditLogPanel;
 use App\Livewire\EditApartmentComponent;
+use App\Livewire\LeasesComponent;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -18,6 +19,7 @@ Route::middleware('auth')->group(function () {
         return view('livewire.payments-page');
     })->name('payments.index');
     Route::view('tenants', 'livewire.tenants-page')->name('tenants');
+    Route::get('contratos', LeasesComponent::class)->name('leases.index');
 
     Route::get('audit-logs', AuditLogPanel::class)->name('audit-logs');
 
