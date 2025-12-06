@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use App\Enums\UserStatus;
 
 class CreateLeaseModal extends Component
 {
@@ -24,7 +25,7 @@ class CreateLeaseModal extends Component
     public ?int $apartment_id = null;
     public ?int $user_id = null;
     public $monthly_rent = '';
-    public int $cutoff_day = 1;
+    public int $cutoff_day;
     public string $start_date = '';
     public string $end_date = '';
     public string $notes = '';
@@ -35,9 +36,7 @@ class CreateLeaseModal extends Component
             'apartment_id' => ['required', 'exists:apartments,id'],
             'user_id' => ['required', 'exists:users,id'],
             'monthly_rent' => ['required', 'integer', 'min:0'],
-            'cutoff_day' => ['required', 'integer', 'min:1', 'max:31'],
             'start_date' => ['required', 'date', 'after_or_equal:today'],
-            'end_date' => ['nullable', 'date', 'after:start_date'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
@@ -77,6 +76,7 @@ class CreateLeaseModal extends Component
     public function tenants(): Collection
     {
         return User::where('role', 'tenant')
+            ->where('status', UserStatus::AVAILABLE->value())
             ->orderBy('name')
             ->get();
     }
@@ -106,7 +106,7 @@ class CreateLeaseModal extends Component
     #[On('open-create-lease-modal')]
     public function open(): void
     {
-        $this->reset(['apartment_id', 'user_id', 'monthly_rent', 'cutoff_day', 'start_date', 'end_date', 'notes']);
+        $this->reset(['apartment_id', 'user_id', 'monthly_rent', 'start_date', 'notes']);
         $this->cutoff_day = 1;
         $this->start_date = Carbon::today()->format('Y-m-d');
         $this->resetValidation();
@@ -138,6 +138,12 @@ class CreateLeaseModal extends Component
             );
             return;
         }
+
+        // Calculate cutoff day
+        $this->cutoff_day = date('d', strtotime($this->start_date));
+
+        //Calculate end date
+        $this->end_date = date('Y-m-d', strtotime($this->start_date . ' + 1 year'));
 
         // Create lease
         $lease = Lease::create([

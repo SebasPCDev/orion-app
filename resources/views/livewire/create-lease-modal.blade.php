@@ -64,7 +64,7 @@
                                 <option value="">Seleccione un inquilino</option>
                                 @foreach($this->tenants as $tenant)
                                     <option value="{{ $tenant->id }}">
-                                        {{ $tenant->name }} - {{ $tenant->email }}
+                                        {{ $tenant->name }} - {{ $tenant->email }} - ({{ $tenant->status->label() }})
                                     </option>
                                 @endforeach
                             </select>
@@ -97,26 +97,6 @@
                             </div>
 
                             <div>
-                                <label for="cutoff_day" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Día de Corte <span class="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="number"
-                                    id="cutoff_day"
-                                    wire:model="cutoff_day"
-                                    min="1"
-                                    max="31"
-                                    class="block w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-shadow @error('cutoff_day') border-red-500 @enderror"
-                                >
-                                @error('cutoff_day')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                @enderror
-                            </div>
-                        </div>
-
-                        {{-- Fechas --}}
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
                                 <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Fecha de Inicio <span class="text-red-500">*</span>
                                 </label>
@@ -131,23 +111,7 @@
                                 @enderror
                             </div>
 
-                            <div>
-                                <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                    Fecha de Fin (Opcional)
-                                </label>
-                                <input
-                                    type="date"
-                                    id="end_date"
-                                    wire:model="end_date"
-                                    class="block w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-shadow @error('end_date') border-red-500 @enderror"
-                                >
-                                @error('end_date')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                @enderror
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                                    Deja vacío para contrato indefinido
-                                </p>
-                            </div>
+
                         </div>
 
                         {{-- Notas --}}

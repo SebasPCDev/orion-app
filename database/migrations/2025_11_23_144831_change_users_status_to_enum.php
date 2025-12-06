@@ -15,12 +15,12 @@ return new class extends Migration
         // First, update any null or invalid values to 'active'
         DB::table('users')
             ->whereNull('status')
-            ->orWhereNotIn('status', ['active', 'inactive'])
+            ->orWhereNotIn('status', ['active', 'inactive', 'available'])
             ->update(['status' => 'active']);
 
         // Change column to enum
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('status', ['active', 'inactive'])->default('active')->change();
+            $table->enum('status', ['active', 'inactive', 'available'])->default('active')->change();
         });
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use App\Enums\UserStatus;
 
 class CreateTenantModal extends Component
 {
@@ -74,7 +75,7 @@ class CreateTenantModal extends Component
             'identification_number' => $this->identification_number,
             'password' => Hash::make($temporaryPassword),
             'role' => 'tenant',
-            'status' => 'inactive',
+            'status' => UserStatus::AVAILABLE->value(),
         ]);
 
         $this->close();

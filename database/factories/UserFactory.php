@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Enums\UserStatus;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -31,7 +32,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'phone' => fake()->phoneNumber(),
             'identification_number' => fake()->unique()->numerify('##########'),
-            'status' => 'active',
+            'status' => UserStatus::ACTIVE,
             'payment_status' => fake()->randomElement(['Al día', 'Retraso', 'Moroso']),
             'backup_phone' => fake()->phoneNumber(),
         ];
